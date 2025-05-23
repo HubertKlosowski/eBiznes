@@ -9,8 +9,16 @@
       Opinie naszych uczniów są dla nas najlepszym dowodem skuteczności.
       Cieszymy się, że dzięki EduLeaf wielu z nich osiąga lepsze wyniki, odzyskuje motywację do nauki i zyskuje pewność siebie przed egzaminami.
     </p>
-    <div class="add_opinion">
+    <div class="more">
+      <div class="add_opinion">
+        <form>
+          <textarea>Tekst</textarea>
+          <button type="submit">Wyślij</button>
+        </form>
+      </div>
+      <div class="random_opinions">
 
+      </div>
     </div>
   </div>
 </template>

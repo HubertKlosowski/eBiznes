@@ -1,11 +1,10 @@
 import { createMemoryHistory, createRouter } from 'vue-router'
 
-import Main from "@/components/Main.vue";
+import MainPage from "@/components/MainPage.vue";
 import Account from "@/components/Account.vue";
-import CoursesInfo from "@/components/CoursesInfo.vue";
 
 const routes = [
-  { path: '/', component: Main },
+  { path: '/', component: MainPage },
   { path: '/account', component: Account }
 ]
 
