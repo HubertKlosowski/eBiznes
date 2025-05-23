@@ -1,6 +1,13 @@
-body {
+@font-face {
+    font-family: 'Rubik';
+    src: url('../assets/rubik/Rubik-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
     margin: 0 auto;
-    font-family: Arial, serif;
+    font-family: Rubik, sans-serif;
 }
 
 #app {
@@ -8,6 +15,5 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 }
