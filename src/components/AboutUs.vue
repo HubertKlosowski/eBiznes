@@ -4,15 +4,15 @@ import {ref} from "vue";
 const numbers = ref([
   {
     category: 'Liczba uczniów',
-    num: 1000
+    num: '1000+'
   },
   {
     category: 'Liczba nauczycieli',
-    num: 100
+    num: '100+'
   },
   {
     category: 'Liczba zakupionych kursów',
-    num: 200
+    num: '200+'
   },
   {
     category: 'Średnia ocena kursów',
@@ -39,15 +39,13 @@ const numbers = ref([
         <h3>Rzetelność</h3>
       </div>
     </div>
+    <h2>Osiągnięcia</h2>
     <div class="numbers">
       <div class="cat" v-for="el in numbers" :key="el">
         <h3>{{ el.category }}</h3>
-        <p v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}+</p>
+        <span v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}</span>
         <div class="stars" v-if="el.category === 'Średnia ocena kursów'">
-          <p>
-            {{ el.num }}
-            <font-awesome-icon :icon="['fas', 'star']" v-for="i in 5"/>
-          </p>
+          {{ el.num }}<font-awesome-icon :icon="['fas', 'star']" v-for="i in 5"/>
         </div>
       </div>
     </div>

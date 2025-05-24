@@ -37,7 +37,7 @@ const courses = ref([
 </script>
 
 <template>
-  <section class="courses">
+  <div class="courses">
     <h2>Nasze kursy</h2>
     <p class="intro">
       Oferujemy szeroki wybór kursów online dostosowanych do różnych poziomów nauczania. Nasi doświadczeni nauczyciele pomagają uczniom zrozumieć trudne zagadnienia, przygotować się do sprawdzianów i egzaminów oraz rozwijać pasję do nauki.
@@ -52,7 +52,7 @@ const courses = ref([
         </RouterLink>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <style scoped>
@@ -68,7 +68,6 @@ const courses = ref([
 
 .courses {
   width: 100%;
-  min-height: 100%;
   margin: 0 auto;
   background-color: #ffffff;
   border-top: 2px solid #10b981;

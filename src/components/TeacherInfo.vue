@@ -8,7 +8,7 @@ const teachers = ref([
   {
     name: 'Katarzyna',
     img: new URL('@/assets/teacher1.jpg', import.meta.url).href,
-    small_desc: 'Katarzyna, 29 lat. Nauczyciel języka polskiego',
+    small_desc: 'Katarzyna. Nauczyciel języka polskiego',
     desc: 'Kasia to entuzjastyczna nauczycielka języka polskiego, która potrafi zarazić pasją do literatury nawet najbardziej opornych uczniów.\n' +
         '          Ukończyła filologię polską na Uniwersytecie Jagiellońskim i od ponad 5 lat pracuje z młodzieżą, przygotowując ją do egzaminu ósmoklasisty i matury.\n' +
         '          Jej zajęcia łączą analizę tekstów z rozwijaniem umiejętności pisarskich i kreatywnego myślenia.\n' +
@@ -17,7 +17,7 @@ const teachers = ref([
   {
     name: 'Walentyna',
     img: new URL('@/assets/teacher2.jpg', import.meta.url).href,
-    small_desc: 'Walentyna, 34 lat. Nauczyciel matematyki',
+    small_desc: 'Walentyna. Nauczyciel matematyki',
     desc: 'Walentyna to energiczna i zaangażowana nauczycielka matematyki z ponad 7-letnim doświadczeniem w pracy z młodzieżą.\n' +
         '          Ukończyła studia matematyczne na Politechnice Wrocławskiej, a swoją pasję do liczb łączy z nowoczesnym podejściem do nauczania.\n' +
         '          Jej uczniowie cenią ją za cierpliwość, świetne tłumaczenie trudnych zagadnień i indywidualne podejście.\n' +
@@ -26,7 +26,7 @@ const teachers = ref([
   {
     name: 'Łukasz',
     img: new URL('@/assets/teacher3.png', import.meta.url).href,
-    small_desc: 'Łukasz, 34 lat. Nauczyciel języka niemieckiego',
+    small_desc: 'Łukasz. Nauczyciel języka niemieckiego',
     desc: 'Łukasz to absolwent germanistyki na Uniwersytecie Warszawskim, od ponad 15 lat uczy języka niemieckiego na poziomach A1–C1.\n' +
         '          Posiada doświadczenie zarówno w pracy z młodzieżą, jak i z dorosłymi. Wieloletni egzaminator TELC i pasjonat kultury niemieckiej.\n' +
         '          Stawia na praktyczne podejście do nauki – dużo mówi po niemiecku, uczy poprzez dialog i autentyczne materiały.\n' +
@@ -84,9 +84,6 @@ watch(pause, () => {
         </div>
       </div>
     </div>
-<!--    <RouterLink to="/teachers" class="link">-->
-<!--      Znajdź nauczyciela-->
-<!--    </RouterLink>-->
   </div>
 </template>
 
