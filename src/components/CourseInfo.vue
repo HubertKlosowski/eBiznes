@@ -67,10 +67,9 @@ const courses = ref([
 }
 
 .courses {
-  width: auto;
-  min-height: 40%;
+  width: 100%;
+  min-height: 100%;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
   background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
@@ -103,18 +102,19 @@ h2 {
 
 .course-list {
   width: 100%;
-  height: 70%;
+  height: auto;
   display: grid;
-  column-gap: 5rem;
+  row-gap: 5rem;
   grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
   justify-items: center;
   align-content: space-evenly;
   padding: 0;
+  margin-bottom: 5rem;
   color: #1f2937;
 }
 
-.course-list .course {
+.course {
   padding: 0.75rem 1rem;
   background-color: #ecfdf5;
   border-left: 4px solid #10b981;
@@ -122,7 +122,7 @@ h2 {
   transition: background-color 0.2s ease;
 }
 
-.course-list .course:hover {
+.course:hover {
   background-color: #d1fae5;
   cursor: pointer;
 }

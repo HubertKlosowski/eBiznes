@@ -8,7 +8,7 @@ import Main from "@/components/Main.vue";
 <template>
   <Header></Header>
   <Main></Main>
-<!--  <Footer></Footer>-->
+  <Footer></Footer>
 </template>
 
 <style scoped>

@@ -1,5 +1,4 @@
 <script setup>
-import background from "@/assets/background.png";
 import {ref} from "vue";
 
 const numbers = ref([
@@ -23,12 +22,7 @@ const numbers = ref([
 </script>
 
 <template>
-  <div class="about_us" :style="{
-      backgroundImage: `url(${background})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
-  }">
+  <div class="about_us">
     <h2>O nas</h2>
     <p class="intro">
       EduLeaf to nowoczesna platforma edukacyjna oferująca korepetycje i kursy online dla uczniów szkół podstawowych i średnich.
@@ -36,19 +30,19 @@ const numbers = ref([
     </p>
     <div class="more">
       <div class="x">
-        Profesjonalizm
+        <h3>Profesjonalizm</h3>
       </div>
       <div class="x">
-        Dokładność
+        <h3>Dokładność</h3>
       </div>
       <div class="x">
-        Rzetelność
+        <h3>Rzetelność</h3>
       </div>
     </div>
     <div class="numbers">
       <div class="cat" v-for="el in numbers" :key="el">
         <h3>{{ el.category }}</h3>
-        <p v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}</p>
+        <p v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}+</p>
         <div class="stars" v-if="el.category === 'Średnia ocena kursów'">
           <p>
             {{ el.num }}
@@ -77,35 +71,35 @@ const numbers = ref([
 }
 
 .cat {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #ecfdf5;
+  border-left: 4px solid #10b981;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.cat:hover {
+  background-color: #d1fae5;
+  cursor: pointer;
 }
 
 .about_us {
-  width: auto;
+  width: 100%;
   height: auto;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
-  background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
+  font-size: 1.5vw;
 }
 
 h2 {
-  font-size: 2rem;
   margin-bottom: 1rem;
   color: #065f46;
   text-align: center;
 }
 
 .intro {
-  font-size: 1.1rem;
   color: #374151;
   margin-bottom: 1.5rem;
   line-height: 1.6;
@@ -118,6 +112,7 @@ h2 {
   justify-content: space-evenly;
   align-items: center;
   padding: 0;
+  margin: 3rem 1.5rem;
   color: #1f2937;
 }
 

@@ -98,10 +98,9 @@ watch(pause, () => {
 }
 
 .teachers {
-  width: auto;
+  width: 100%;
   height: auto;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
   background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;

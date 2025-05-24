@@ -40,11 +40,11 @@ const submitOpinion = () => {
 
 <style scoped>
 .opinions {
+  width: 100%;
   font-size: 1.15rem;
   background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
-  padding: 3rem 1.5rem;
   margin: 0 auto;
   display: flex;
   flex-direction: row;

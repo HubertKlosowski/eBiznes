@@ -19,14 +19,13 @@
 
 <style scoped>
 .header {
-  width: auto;
+  width: 100%;
   height: auto;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
   background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
@@ -35,11 +34,13 @@
 
 .company {
   max-width: 6%;
+  padding: 3rem 1.5rem;
   height: auto;
 }
 
 .account {
   max-width: 5%;
+  padding: 3rem 1.5rem;
   height: auto;
   object-fit: contain;
   display: block;

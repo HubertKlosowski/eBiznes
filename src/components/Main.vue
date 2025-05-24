@@ -18,6 +18,7 @@ import CourseInfo from "@/components/CourseInfo.vue";
 <style scoped>
 .main {
   width: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
 }
