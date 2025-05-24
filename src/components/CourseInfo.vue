@@ -2,14 +2,37 @@
 import {ref} from "vue";
 
 const show_span = ref(-1)
-const courses = ref(['Matematyka', 'Język angielski', 'Język niemiecki', 'Język polski', 'Fizyka', 'Chemia'])
-const desc = ref([
-    'Kursy od podstawówki po maturę. Zrozumienie zasad, praktyka, egzaminy.',
-    'Gramatyka, słownictwo, konwersacje, certyfikaty językowe.',
-    'Lekcje z native speakerami. Mówienie, pisanie, czytanie.',
-    'Przygotowanie do egzaminów, wypracowania, lektury.',
-    'Zrozumiałe wyjaśnienia zjawisk, teoria i zadania.',
-    'Reakcje, równania, przygotowanie do egzaminów.'
+const courses = ref([
+  {
+    name: 'Matematyka',
+    icon: ['fas', 'calculator'],
+    desc: 'Kursy od podstawówki po maturę. Zrozumienie zasad, praktyka, egzaminy.'
+  },
+  {
+    name: 'Biologia',
+    icon: ['fas', 'dna'],
+    desc: 'Anatomia, genetyka, ekologia, przygotowanie do egzaminów.',
+  },
+  {
+    name: 'Język angielski',
+    icon: ['fas', 'language'],
+    desc: 'Lekcje z native speakerami. Mówienie, pisanie, czytanie.',
+  },
+  {
+    name: 'Informatyka',
+    icon: ['fas', 'computer'],
+    desc: 'Algorytmy, programowanie, bazy danych, praktyczne projekty.',
+  },
+  {
+    name: 'Fizyka',
+    icon: ['fas', 'rocket'],
+    desc: 'Zrozumiałe wyjaśnienia zjawisk, teoria i zadania.',
+  },
+  {
+    name: 'Chemia',
+    icon: ['fas', 'flask-vial'],
+    desc: 'Reakcje, równania, przygotowanie do egzaminów.'
+  },
 ])
 </script>
 
@@ -22,10 +45,10 @@ const desc = ref([
 
     <div class="course-list">
       <div class="course" @mouseover="show_span = i" @mouseleave="show_span = -1" v-for="(el, i) in courses" :key="el">
-        <h3>{{ courses[i] }}</h3>
-        <div class="desc" v-if="show_span === i">{{ desc[i] }}</div>
+        <h3>{{ el.name }}</h3>
+        <div class="desc" v-if="show_span === i">{{ el.desc }}</div>
         <RouterLink to="/courses" class="link" v-if="show_span === i">
-          <font-awesome-icon :icon="['fas', 'arrow-circle-right']" />
+          <font-awesome-icon :icon="el.icon" />
         </RouterLink>
       </div>
     </div>
