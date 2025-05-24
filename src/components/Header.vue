@@ -19,7 +19,7 @@
 
 <style scoped>
 .header {
-  width: 100%;
+  width: auto;
   height: auto;
   display: flex;
   flex-direction: row;

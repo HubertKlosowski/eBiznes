@@ -25,7 +25,7 @@
 
 <style scoped>
 .about_us {
-  width: 100%;
+  width: auto;
   height: auto;
   margin: 0 auto;
   padding: 3rem 1.5rem;

@@ -2,16 +2,16 @@
 
 import TeacherInfo from "@/components/TeacherInfo.vue";
 import AboutUs from "@/components/AboutUs.vue";
-import Opinions from "@/components/Opinions.vue";
-import CoursesInfo from "@/components/CoursesInfo.vue";
+import OpinionInfo from "@/components/OpinionInfo.vue";
+import CourseInfo from "@/components/CourseInfo.vue";
 </script>
 
 <template>
   <div class="main">
     <AboutUs></AboutUs>
-    <CoursesInfo></CoursesInfo>
+    <CourseInfo></CourseInfo>
     <TeacherInfo></TeacherInfo>
-    <Opinions></Opinions>
+    <OpinionInfo></OpinionInfo>
   </div>
 </template>
 

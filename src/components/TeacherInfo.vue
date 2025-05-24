@@ -1,5 +1,15 @@
 <script setup>
+import {onMounted, ref} from "vue";
 
+const show_info = ref(0)
+
+const changeTeacher = () => {
+  show_info.value === 2 ? show_info.value = 0 : show_info.value += 1
+}
+
+onMounted(() => {
+  setInterval(changeTeacher, 2000)
+})
 </script>
 
 <template>
@@ -12,7 +22,7 @@
       W EduLeaf stawiamy na jakość, dlatego każdy nauczyciel przechodzi proces rekrutacji i weryfikacji umiejętności, by zagwarantować najwyższy poziom nauki.
     </p>
     <div class="random_people">
-      <div class="person">
+      <div class="person" v-if="show_info === 0">
         <div class="img">
           <img src="@/assets/teacher1.jpg" alt="Katarzyna">
         </div>
@@ -23,7 +33,7 @@
           Uczniowie doceniają jej empatyczne podejście, zrozumiały sposób tłumaczenia i atmosferę wsparcia na lekcjach.
         </div>
       </div>
-      <div class="person">
+      <div class="person" v-if="show_info === 1">
         <div class="img">
           <img src="@/assets/teacher2.jpg" alt="Walentyna">
         </div>
@@ -34,9 +44,9 @@
           Przygotowuje zarówno do sprawdzianów, jak i matury – podstawowej i rozszerzonej – osiągając bardzo dobre wyniki.
         </div>
       </div>
-      <div class="person">
+      <div class="person" v-if="show_info === 2">
         <div class="img">
-          <img src="@/assets/teacher1.jpg" alt="Łukasz">
+          <img src="@/assets/teacher3.png" alt="Łukasz">
         </div>
         <div class="desc">
           Łukasz to absolwent germanistyki na Uniwersytecie Warszawskim, od ponad 15 lat uczy języka niemieckiego na poziomach A1–C1.
@@ -51,7 +61,7 @@
 
 <style scoped>
 .teachers {
-  width: 100%;
+  width: auto;
   height: auto;
   margin: 0 auto;
   padding: 3rem 1.5rem;
@@ -86,14 +96,16 @@ h2 {
 }
 
 .img img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
+  width: 15rem;
+  height: 17rem;
+  object-fit: fill;
   display: block;
 }
 
 .random_people > .person {
-  width: 20%;
+  width: 50%;
+  display: flex;
+  flex-direction: row;
   text-align: center;
   font-size: 1rem;
   padding: 0.75rem 1rem;
@@ -106,5 +118,6 @@ h2 {
 
 .random_people .person:hover {
   background-color: #d1fae5;
+  cursor: pointer;
 }
 </style>
