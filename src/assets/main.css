@@ -7,7 +7,7 @@
 
 html, body {
     margin: 0 auto;
-    overflow-x: hidden;
+    overflow-x: hidden;  /*dowiedz się czemu tak jest*/
     font-family: Rubik, sans-serif;
 }
 

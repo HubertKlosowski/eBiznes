@@ -34,14 +34,18 @@ const desc = ref([
 
 <style scoped>
 .link {
+  width: 20%;
+  height: 20%;
+  padding: 0.5rem;
   font-size: 2.5vw;
   text-align: center;
   align-content: center;
+  border-radius: 1.5rem;
 }
 
 .courses {
   width: auto;
-  min-height: 30%;
+  min-height: 40%;
   margin: 0 auto;
   padding: 3rem 1.5rem;
   background-color: #ffffff;

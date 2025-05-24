@@ -1,14 +1,60 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
-const show_info = ref(0)
+const counter = ref(0)
+const pause = ref(false)
 
-const changeTeacher = () => {
-  show_info.value === 2 ? show_info.value = 0 : show_info.value += 1
-}
+const teachers = ref([
+  {
+    name: 'Katarzyna',
+    img: new URL('@/assets/teacher1.jpg', import.meta.url).href,
+    small_desc: 'Katarzyna, 29 lat. Nauczyciel języka polskiego',
+    desc: 'Kasia to entuzjastyczna nauczycielka języka polskiego, która potrafi zarazić pasją do literatury nawet najbardziej opornych uczniów.\n' +
+        '          Ukończyła filologię polską na Uniwersytecie Jagiellońskim i od ponad 5 lat pracuje z młodzieżą, przygotowując ją do egzaminu ósmoklasisty i matury.\n' +
+        '          Jej zajęcia łączą analizę tekstów z rozwijaniem umiejętności pisarskich i kreatywnego myślenia.\n' +
+        '          Uczniowie doceniają jej empatyczne podejście, zrozumiały sposób tłumaczenia i atmosferę wsparcia na lekcjach.'
+  },
+  {
+    name: 'Walentyna',
+    img: new URL('@/assets/teacher2.jpg', import.meta.url).href,
+    small_desc: 'Walentyna, 34 lat. Nauczyciel matematyki',
+    desc: 'Walentyna to energiczna i zaangażowana nauczycielka matematyki z ponad 7-letnim doświadczeniem w pracy z młodzieżą.\n' +
+        '          Ukończyła studia matematyczne na Politechnice Wrocławskiej, a swoją pasję do liczb łączy z nowoczesnym podejściem do nauczania.\n' +
+        '          Jej uczniowie cenią ją za cierpliwość, świetne tłumaczenie trudnych zagadnień i indywidualne podejście.\n' +
+        '          Przygotowuje zarówno do sprawdzianów, jak i matury – podstawowej i rozszerzonej – osiągając bardzo dobre wyniki.'
+  },
+  {
+    name: 'Łukasz',
+    img: new URL('@/assets/teacher3.png', import.meta.url).href,
+    small_desc: 'Łukasz, 34 lat. Nauczyciel języka niemieckiego',
+    desc: 'Łukasz to absolwent germanistyki na Uniwersytecie Warszawskim, od ponad 15 lat uczy języka niemieckiego na poziomach A1–C1.\n' +
+        '          Posiada doświadczenie zarówno w pracy z młodzieżą, jak i z dorosłymi. Wieloletni egzaminator TELC i pasjonat kultury niemieckiej.\n' +
+        '          Stawia na praktyczne podejście do nauki – dużo mówi po niemiecku, uczy poprzez dialog i autentyczne materiały.\n' +
+        '          Uczniowie cenią go za spokój, cierpliwość i poczucie humoru.'
+  }
+])
+
+let active_pearson = null
 
 onMounted(() => {
-  setInterval(changeTeacher, 2000)
+  active_pearson = setInterval(() => {
+    counter.value = (counter.value + 1) % teachers.value.length
+  }, 2000)
+})
+
+watch(counter, () => {
+  const first = teachers.value.shift()
+  teachers.value.push(first)
+})
+
+watch(pause, () => {
+  if (pause.value === true) {
+    clearInterval(active_pearson)
+  } else {
+    active_pearson = setInterval(() => {
+      counter.value = (counter.value + 1) % teachers.value.length
+    }, 2000)
+  }
 })
 </script>
 
@@ -22,44 +68,35 @@ onMounted(() => {
       W EduLeaf stawiamy na jakość, dlatego każdy nauczyciel przechodzi proces rekrutacji i weryfikacji umiejętności, by zagwarantować najwyższy poziom nauki.
     </p>
     <div class="random_people">
-      <div class="person" v-if="show_info === 0">
+      <div :class="i === 1 ? 'active_person' : 'person'" v-for="(el, i) in teachers" :key="el">
         <div class="img">
-          <img src="@/assets/teacher1.jpg" alt="Katarzyna">
+          <img :src="el.img" :alt="el.name">
         </div>
-        <div class="desc">
-          Kasia to entuzjastyczna nauczycielka języka polskiego, która potrafi zarazić pasją do literatury nawet najbardziej opornych uczniów.
-          Ukończyła filologię polską na Uniwersytecie Jagiellońskim i od ponad 5 lat pracuje z młodzieżą, przygotowując ją do egzaminu ósmoklasisty i matury.
-          Jej zajęcia łączą analizę tekstów z rozwijaniem umiejętności pisarskich i kreatywnego myślenia.
-          Uczniowie doceniają jej empatyczne podejście, zrozumiały sposób tłumaczenia i atmosferę wsparcia na lekcjach.
+        <div class="small_desc">
+          <b>{{ el.small_desc }}</b>
         </div>
-      </div>
-      <div class="person" v-if="show_info === 1">
-        <div class="img">
-          <img src="@/assets/teacher2.jpg" alt="Walentyna">
+        <div class="desc" v-if="pause && i === 1">
+          {{ el.desc }}
         </div>
-        <div class="desc">
-          Walentyna to energiczna i zaangażowana nauczycielka matematyki z ponad 7-letnim doświadczeniem w pracy z młodzieżą.
-          Ukończyła studia matematyczne na Politechnice Wrocławskiej, a swoją pasję do liczb łączy z nowoczesnym podejściem do nauczania.
-          Jej uczniowie cenią ją za cierpliwość, świetne tłumaczenie trudnych zagadnień i indywidualne podejście.
-          Przygotowuje zarówno do sprawdzianów, jak i matury – podstawowej i rozszerzonej – osiągając bardzo dobre wyniki.
-        </div>
-      </div>
-      <div class="person" v-if="show_info === 2">
-        <div class="img">
-          <img src="@/assets/teacher3.png" alt="Łukasz">
-        </div>
-        <div class="desc">
-          Łukasz to absolwent germanistyki na Uniwersytecie Warszawskim, od ponad 15 lat uczy języka niemieckiego na poziomach A1–C1.
-          Posiada doświadczenie zarówno w pracy z młodzieżą, jak i z dorosłymi. Wieloletni egzaminator TELC i pasjonat kultury niemieckiej.
-          Stawia na praktyczne podejście do nauki – dużo mówi po niemiecku, uczy poprzez dialog i autentyczne materiały.
-          Uczniowie cenią go za spokój, cierpliwość i poczucie humoru.
+        <div class="link" v-if="i === 1" @click="pause = !pause">
+          <font-awesome-icon :icon="['fas', 'play']" v-if="pause" />
+          <font-awesome-icon :icon="['fas', 'pause']" v-else />
         </div>
       </div>
     </div>
+<!--    <RouterLink to="/teachers" class="link">-->
+<!--      Znajdź nauczyciela-->
+<!--    </RouterLink>-->
   </div>
 </template>
 
 <style scoped>
+.link {
+  width: 10%;
+  padding: 0;
+  font-size: 1.5vw;
+}
+
 .teachers {
   width: auto;
   height: auto;
@@ -92,20 +129,22 @@ h2 {
   justify-content: space-evenly;
   align-items: center;
   padding: 0;
+  margin-top: 5rem;
+  margin-bottom: 3rem;
   color: #1f2937;
 }
 
 .img img {
-  width: 15rem;
+  width: 100%;
   height: 17rem;
   object-fit: fill;
   display: block;
 }
 
-.random_people > .person {
-  width: 50%;
+.person, .active_person {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   font-size: 1rem;
   padding: 0.75rem 1rem;
@@ -114,9 +153,23 @@ h2 {
   border-radius: 6px;
   margin-bottom: 0.75rem;
   transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
-.random_people .person:hover {
+.person {
+  width: 50%;
+  opacity: 0.4;
+  transition: all 0.2s ease;
+}
+
+.active_person {
+  width: 70%;
+  opacity: 1;
+  z-index: 1;
+  transform: scale(1.1);
+}
+
+.person:hover {
   background-color: #d1fae5;
   cursor: pointer;
 }
