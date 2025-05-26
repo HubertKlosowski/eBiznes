@@ -1,5 +1,29 @@
 <script setup>
+import {ref} from "vue";
 
+const links = ref([
+  {
+    route: '/login',
+    name: 'Konto',
+    icon: ['fas', 'user']
+  },
+  {
+    route: '/calendar',
+    name: 'Kalendarz',
+    icon: ['fas', 'calendar']
+  },
+  {
+    route: '/courses',
+    name: 'Kursy',
+    icon: ['fas', 'building-columns']
+  },
+  {
+    route: '/contact',
+    name: 'Kontakt',
+    icon: ['fas', 'address-book']
+  },
+])
+const show_info = ref(-1)
 </script>
 
 <template>
@@ -9,25 +33,32 @@
         <img src="/src/assets/eduleaf.jpg" alt="logo EduLeaf">
       </RouterLink>
     </div>
-    <div class="account">
-      <RouterLink to="/account" class="link">
-        <font-awesome-icon :icon="['fas', 'user']" />
-      </RouterLink>
-    </div>
-    <div class="calendar">
-      <RouterLink to="/calendar" class="link">
-        <font-awesome-icon :icon="['fas', 'calendar']" />
-      </RouterLink>
-    </div>
-    <div class="contact">
-      <RouterLink to="/contact" class="link">
-        <font-awesome-icon :icon="['fas', 'address-book']" />
+    <div class="links">
+      <RouterLink
+          to="{{ link.route }}"
+          class="link"
+          v-for="(link, i) in links"
+          :key="link"
+          @mouseenter="show_info = i"
+          @mouseleave="show_info = -1"
+      >
+        <font-awesome-icon :icon="link.icon"/>
+        <span v-show="show_info === i">{{ link.name }}</span>
       </RouterLink>
     </div>
   </div>
 </template>
 
 <style scoped>
+.links {
+  font-size: 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 .header {
   width: 100%;
   height: auto;
@@ -54,6 +85,6 @@
   object-fit: contain;
   display: block;
   border-radius: 2.5rem;
-  border: 0.25rem solid black;
+  border: 0.25rem solid #10b981;
 }
 </style>
