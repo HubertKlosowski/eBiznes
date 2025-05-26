@@ -19,6 +19,11 @@
         <font-awesome-icon :icon="['fas', 'calendar']" />
       </RouterLink>
     </div>
+    <div class="contact">
+      <RouterLink to="/contact" class="link">
+        <font-awesome-icon :icon="['fas', 'address-book']" />
+      </RouterLink>
+    </div>
   </div>
 </template>
 
