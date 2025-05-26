@@ -6,6 +6,7 @@ import Courses from "@/components/Courses.vue";
 import Contact from "@/components/Contact.vue";
 import Account from "@/components/Account.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
+import Calendar from "@/components/Calendar.vue";
 
 const routes = [
   {
@@ -25,6 +26,9 @@ const routes = [
   },
   {
     path: '/contact', component: Contact
+  },
+  {
+    path: '/calendar', component: Calendar
   }
 ]
 

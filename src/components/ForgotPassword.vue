@@ -1,6 +1,5 @@
 <script setup>
 import FormInputText from "@/components/FormInputText.vue";
-import FormInputSelect from "@/components/FormInputSelect.vue";
 import {ref} from "vue";
 
 const email = ref('')

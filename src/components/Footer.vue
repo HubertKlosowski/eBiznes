@@ -13,7 +13,7 @@
         <p>ul. Radwańska 321, 91-111 Łódź</p>
       </div>
     </div>
-    <div class="social_media">
+    <div class="social-media">
       <h3>Media społecznościowe</h3>
       <a href="https://www.facebook.com/?lsrc=lb">
         <font-awesome-icon :icon="['fab', 'facebook']" class="link" />
@@ -51,7 +51,7 @@ a {
   align-items: center;
 }
 
-.social_media {
+.social-media {
   width: 30%;
   display: flex;
   flex-direction: column;
