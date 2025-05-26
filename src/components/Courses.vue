@@ -3,6 +3,7 @@ import {reactive, ref, watch} from "vue";
 import _ from "lodash";
 import FormInputText from "@/components/FormInputText.vue";
 import Header from "@/components/Header.vue";
+import FormInputSelect from "@/components/FormInputSelect.vue";
 
 const courses = ref([
   // MATEMATYKA
@@ -270,25 +271,26 @@ watch(filters, () => {
             </label>
           </div>
           <h4>Cena</h4>
+
           <FormInputText
               :label_for="'minimum'"
               :placeholder="'od zł'"
               v-model:input_value="filters.price_range.p_min"
           ></FormInputText>
+
           <FormInputText
               :label_for="'maximum'"
               :placeholder="'do zł'"
               v-model:input_value="filters.price_range.p_max"
           ></FormInputText>
-          <div class="form-row">
+
+          <FormInputSelect
+              :select_values="['Ocena: od najlepszej', 'Cena: od najwyższej', 'Cena: od najniższej']"
+              v-model:input_value="filters.selected"
+          >
             <h4>Sortuj</h4>
-            <select v-model="filters.selected">
-              <option disabled value="">Wybierz jedną z opcji</option>
-              <option>Ocena: od najlepszej</option>
-              <option>Cena: od najwyższej</option>
-              <option>Cena: od najniższej</option>
-            </select>
-          </div>
+          </FormInputSelect>
+
           <button type="submit" class="submit-btn">Zastosuj</button>
         </form>
         <div class="applied-filters">

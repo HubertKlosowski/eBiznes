@@ -1,6 +1,7 @@
 <script setup>
 import {reactive, ref} from "vue";
 import FormInputText from "@/components/FormInputText.vue";
+import CreateAccount from "@/components/CreateAccount.vue";
 
 const user = reactive({
   username: '',
@@ -14,7 +15,7 @@ const logIn = () => {
 </script>
 
 <template>
-  <div class="login-container">
+  <div class="login-container" v-if="!change_view">
     <form @submit.prevent="logIn" class="login-form">
       <h2 class="form-title">Zaloguj się</h2>
 
@@ -49,6 +50,7 @@ const logIn = () => {
       </div>
     </form>
   </div>
+  <CreateAccount v-else></CreateAccount>
 </template>
 
 <style scoped>
