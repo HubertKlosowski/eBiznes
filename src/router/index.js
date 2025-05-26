@@ -4,6 +4,7 @@ import MainPage from "@/components/MainPage.vue";
 import LogIn from "@/components/LogIn.vue";
 import Courses from "@/components/Courses.vue";
 import Contact from "@/components/Contact.vue";
+import Account from "@/components/Account.vue";
 
 const routes = [
   {
@@ -11,6 +12,12 @@ const routes = [
   },
   {
     path: '/login', component: LogIn
+  },
+  {
+    path: '/account', component: Account
+  },
+  {
+    path: '/forgot_passwd'
   },
   {
     path: '/courses', component: Courses
@@ -23,6 +30,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from) => {
+
 })
 
 export default router

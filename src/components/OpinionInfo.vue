@@ -40,7 +40,8 @@ const submitOpinion = () => {
 
 <style scoped>
 .opinions {
-  width: 100%;
+  width: inherit;
+  min-height: 55vh;
   font-size: 1.15rem;
   background-color: #ffffff;
   border-top: 2px solid #10b981;
@@ -73,10 +74,9 @@ const submitOpinion = () => {
 
 .add-opinion-form {
   width: 40%;
-  height: 90%;
+  height: auto;
   margin-top: 2rem;
   background-color: #ffffff;
-  padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 0 4px rgba(0,0,0,0.05);
 }

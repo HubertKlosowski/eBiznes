@@ -96,7 +96,7 @@ watch(pause, () => {
 
 .teachers {
   width: 100%;
-  height: auto;
+  min-height: 45vh;
   margin: 0 auto;
   background-color: #ffffff;
   border-top: 2px solid #10b981;

@@ -1,5 +1,6 @@
 <script setup>
 import {reactive, ref} from "vue";
+import FormInputText from "@/components/FormInputText.vue";
 
 const user = reactive({
   username: '',
@@ -17,15 +18,20 @@ const logIn = () => {
     <form @submit.prevent="logIn" class="login-form">
       <h2 class="form-title">Zaloguj się</h2>
 
-      <div class="form-group">
-        <label for="username">Nazwa użytkownika</label>
-        <input type="text" id="username" v-model="user.username" placeholder="Wpisz login" />
-      </div>
+      <FormInputText
+          :label_for="'username'"
+          :label="'Nazwa użytkownika'"
+          :placeholder="'Wpisz login'"
+          v-model:input_value="user.username"
+      ></FormInputText>
 
-      <div class="form-group">
-        <label for="password">Hasło</label>
-        <input type="password" id="password" v-model="user.password" placeholder="••••••••" />
-      </div>
+      <FormInputText
+          :label_for="'password'"
+          :label="'Hasło'"
+          :placeholder="'••••••••'"
+          :is_passwd="true"
+          v-model:input_value="user.password"
+      ></FormInputText>
 
       <button type="submit" class="submit-btn">Zaloguj się</button>
 
@@ -53,7 +59,6 @@ const logIn = () => {
   min-height: 100vh;
   width: 50%;
   background: #f9fafb;
-  padding: 2rem;
 }
 
 .login-form {
@@ -71,49 +76,6 @@ const logIn = () => {
   margin-bottom: 2rem;
   text-align: center;
   color: #10b981;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-  color: #374151;
-}
-
-input {
-  padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-input:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #10b981;
-  color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-  background-color: #059669;
 }
 
 .link-row {

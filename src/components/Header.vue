@@ -35,7 +35,7 @@ const show_info = ref(-1)
     </div>
     <div class="links">
       <RouterLink
-          to="{{ link.route }}"
+          :to="link.route"
           class="link"
           v-for="(link, i) in links"
           :key="link"
@@ -61,7 +61,7 @@ const show_info = ref(-1)
 
 .header {
   width: 100%;
-  height: auto;
+  height: 20vh;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -74,8 +74,7 @@ const show_info = ref(-1)
 }
 
 .company {
-  max-width: 6%;
-  padding: 3rem 1.5rem;
+  max-width: 5%;
   height: auto;
 }
 

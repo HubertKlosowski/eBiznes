@@ -11,32 +11,52 @@ html, body {
 }
 
 #app {
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     align-content: center;
+    align-items: center;
 }
 
 .link {
-  width: 20%;
-  height: auto;
-  background-color: #f0fdf4;
-  padding: 1rem;
-  margin: 1rem;
-  border-radius: 0.5rem;
-  border: 2px solid #10b981;
-  text-decoration: none;
-  color: #065f46;
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.3s ease-in-out;
+    width: 20%;
+    height: auto;
+    background-color: #f0fdf4;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid #10b981;
+    text-decoration: none;
+    color: #065f46;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
 }
 
 .link:hover {
-  cursor: pointer;
-  background-color: #10b981;
-  border-color: #059669;
-  color: white;
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-  transform: translateY(-2px)
+    cursor: pointer;
+    background-color: #10b981;
+    border-color: #059669;
+    color: white;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    transform: translateY(-2px)
+}
+
+.submit-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: #10b981;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #059669;
 }

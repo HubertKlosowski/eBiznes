@@ -68,6 +68,7 @@ const courses = ref([
 
 .courses {
   width: 100%;
+  height: auto;
   margin: 0 auto;
   background-color: #ffffff;
   border-top: 2px solid #10b981;

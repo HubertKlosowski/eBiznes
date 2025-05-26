@@ -65,8 +65,8 @@ a {
 }
 
 .footer {
-  width: 100%;
-  height: 50%;
+  width: inherit;
+  height: auto;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -79,7 +79,6 @@ a {
 }
 
 .footer > * {
-  height: 100%;
   margin: 3rem 1.5rem;
   padding: 0.75rem 1rem;
   background-color: #ecfdf5;
