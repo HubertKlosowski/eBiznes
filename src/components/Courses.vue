@@ -13,7 +13,8 @@ const courses = ref([
     level: 'beginner',
     duration: 20,
     max_people: 15,
-    price: 199
+    price: 199,
+    score: 3
   },
   {
     subject: 'Matematyka',
@@ -22,7 +23,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 30,
     max_people: 20,
-    price: 249
+    price: 249,
+    score: 1
   },
   {
     subject: 'Matematyka',
@@ -31,7 +33,8 @@ const courses = ref([
     level: 'beginner',
     duration: 18,
     max_people: 12,
-    price: 189
+    price: 189,
+    score: 5
   },
   {
     subject: 'Matematyka',
@@ -40,7 +43,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 22,
     max_people: 18,
-    price: 229
+    price: 229,
+    score: 1
   },
   {
     subject: 'Matematyka',
@@ -49,7 +53,8 @@ const courses = ref([
     level: 'advanced',
     duration: 40,
     max_people: 25,
-    price: 299
+    price: 299,
+    score: 4
   },
 
   // FIZYKA
@@ -60,7 +65,8 @@ const courses = ref([
     level: 'beginner',
     duration: 25,
     max_people: 15,
-    price: 219
+    price: 219,
+    score: 2
   },
   {
     subject: 'Fizyka',
@@ -69,7 +75,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 28,
     max_people: 12,
-    price: 239
+    price: 239,
+    score: 5
   },
   {
     subject: 'Fizyka',
@@ -78,7 +85,8 @@ const courses = ref([
     level: 'advanced',
     duration: 30,
     max_people: 10,
-    price: 299
+    price: 299,
+    score: 1
   },
   {
     subject: 'Fizyka',
@@ -87,7 +95,8 @@ const courses = ref([
     level: 'advanced',
     duration: 35,
     max_people: 20,
-    price: 269
+    price: 269,
+    score: 3
   },
   {
     subject: 'Fizyka',
@@ -96,7 +105,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 24,
     max_people: 16,
-    price: 229
+    price: 229,
+    score: 1
   },
 
   // CHEMIA
@@ -107,7 +117,8 @@ const courses = ref([
     level: 'beginner',
     duration: 20,
     max_people: 15,
-    price: 199
+    price: 199,
+    score: 1
   },
   {
     subject: 'Chemia',
@@ -116,7 +127,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 30,
     max_people: 12,
-    price: 249
+    price: 249,
+    score: 2
   },
   {
     subject: 'Chemia',
@@ -125,7 +137,8 @@ const courses = ref([
     level: 'advanced',
     duration: 28,
     max_people: 10,
-    price: 259
+    price: 259,
+    score: 3
   },
   {
     subject: 'Chemia',
@@ -134,7 +147,8 @@ const courses = ref([
     level: 'advanced',
     duration: 32,
     max_people: 20,
-    price: 279
+    price: 279,
+    score: 5
   },
   {
     subject: 'Chemia',
@@ -143,7 +157,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 26,
     max_people: 14,
-    price: 239
+    price: 239,
+    score: 4
   },
 
   // BIOLOGIA
@@ -154,7 +169,8 @@ const courses = ref([
     level: 'beginner',
     duration: 20,
     max_people: 15,
-    price: 189
+    price: 189,
+    score: 4
   },
   {
     subject: 'Biologia',
@@ -163,7 +179,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 25,
     max_people: 12,
-    price: 239
+    price: 239,
+    score: 3.5
   },
   {
     subject: 'Biologia',
@@ -172,7 +189,8 @@ const courses = ref([
     level: 'intermediate',
     duration: 24,
     max_people: 15,
-    price: 229
+    price: 229,
+    score: 1.7
   },
   {
     subject: 'Biologia',
@@ -181,7 +199,8 @@ const courses = ref([
     level: 'beginner',
     duration: 22,
     max_people: 18,
-    price: 219
+    price: 219,
+    score: 2.5
   },
   {
     subject: 'Biologia',
@@ -190,9 +209,11 @@ const courses = ref([
     level: 'advanced',
     duration: 35,
     max_people: 20,
-    price: 279
+    price: 279,
+    score: 4.5
   }
 ])
+const show_courses = ref(courses.value)
 const subjects = ref(_.uniq(_.map(courses.value, 'subject')))
 const show_info = ref(-1)
 const filters = reactive({
@@ -205,7 +226,25 @@ const filters = reactive({
 })
 
 const filterCourses = () => {
+  show_courses.value = courses.value
+  if (filters.subject !== '') {
+    show_courses.value = _.filter(show_courses.value, function (c) { return c.subject === filters.subject })
+  }
 
+  if (filters.price_range.p_min !== null) {
+    show_courses.value = _.filter(show_courses.value, function (c) { return c.price >= filters.price_range.p_min })
+  }
+  if (filters.price_range.p_max !== null) {
+    show_courses.value = _.filter(show_courses.value, function (c) { return c.price <= filters.price_range.p_max })
+  }
+
+  if (filters.selected === 'Ocena: od najlepszej') {
+    show_courses.value = _.orderBy(show_courses.value, ['score'], ['desc'])
+  } else if (filters.selected === 'Cena: od najniższej') {
+    show_courses.value = _.orderBy(show_courses.value, ['price'], ['asc'])
+  } else if (filters.selected === 'Cena: od najwyższej') {
+    show_courses.value = _.orderBy(show_courses.value, ['price'], ['desc'])
+  }
 }
 
 watch(filters, () => {
@@ -272,18 +311,31 @@ watch(filters, () => {
         </div>
       </div>
       <div class="courses-list">
-        <div class="course" v-for="(course, i) in courses" :key="course">
-          <h3>{{ course.title }}</h3>
+        <div class="course" v-for="(course, i) in show_courses" :key="course">
+          <div class="important_info">
+            <h3>{{ course.title }}</h3>
+            <span>Cena: {{ course.price }} zł</span>
+            <span>Ocena: {{ course.score }}/5</span>
+          </div>
           <div class="link" @click="show_info = i">
             Pokaż szczegóły
           </div>
         </div>
       </div>
     </div>
+    <div class="courses-main" v-else>
+
+    </div>
   </div>
 </template>
 
 <style scoped>
+.important_info {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
 .applied-filters {
   display: flex;
   flex-direction: column;
@@ -333,7 +385,7 @@ select:focus {
 
 .course {
   width: 80%;
-  height: 20%;
+  min-height: 25%;
   margin-top: 1rem;
   display: flex;
   flex-direction: row;
