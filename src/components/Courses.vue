@@ -297,19 +297,19 @@ watch(filters, () => {
           <span
               v-if="filters.subject !== ''"
               @click="filters.subject = ''"
-          >{{ filters.subject }}</span>
+          ><font-awesome-icon :icon="['fas', 'circle-xmark']" /> {{ filters.subject }}</span>
           <span
               v-if="filters.price_range.p_min !== null"
               @click="filters.price_range.p_min = null"
-          >{{ filters.price_range.p_min }}</span>
+          ><font-awesome-icon :icon="['fas', 'circle-xmark']" /> {{ filters.price_range.p_min }}</span>
           <span
               v-if="filters.price_range.p_max !== null"
               @click="filters.price_range.p_max = null"
-          >{{ filters.price_range.p_max }}</span>
+          ><font-awesome-icon :icon="['fas', 'circle-xmark']" /> {{ filters.price_range.p_max }}</span>
           <span
               v-if="filters.selected !== ''"
               @click="filters.selected = ''"
-          >{{ filters.selected }}</span>
+          ><font-awesome-icon :icon="['fas', 'circle-xmark']" /> {{ filters.selected }}</span>
         </div>
       </div>
       <div class="courses-list">
@@ -352,30 +352,6 @@ watch(filters, () => {
 
 .submit-btn {
   margin-bottom: 1rem;
-}
-
-select {
-  width: 100%;
-  max-width: 300px;
-  padding: 0.5rem 1rem;
-  border: 2px solid #10b981;
-  border-radius: 0.75rem;
-  background-color: #ffffff;
-  color: #111827;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='10' height='7' viewBox='0 0 10 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2310b981' stroke-width='2'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1rem;
-}
-
-select:focus {
-  outline: none;
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
 }
 
 .form-row {
