@@ -60,27 +60,29 @@ watch(pause, () => {
 
 <template>
   <div class="teachers">
-    <h2>Nasi nauczyciele</h2>
-    <p class="intro">
-      Nasi nauczyciele to zespół doświadczonych i zaangażowanych edukatorów, którzy z pasją przekazują wiedzę.
-      Każdy z nich posiada odpowiednie kwalifikacje, a wielu z nich to egzaminatorzy, nauczyciele akademiccy lub native speakerzy.
-      Dzięki nowoczesnym metodom nauczania i indywidualnemu podejściu do ucznia, potrafią skutecznie wspierać rozwój kompetencji oraz przygotowanie do egzaminów.
-      W EduLeaf stawiamy na jakość, dlatego każdy nauczyciel przechodzi proces rekrutacji i weryfikacji umiejętności, by zagwarantować najwyższy poziom nauki.
-    </p>
-    <div class="random_people">
-      <div :class="i === 1 ? 'active_person' : 'person'" v-for="(el, i) in teachers" :key="el">
-        <div class="img">
-          <img :src="el.img" :alt="el.name">
-        </div>
-        <div class="small_desc">
-          <b>{{ el.small_desc }}</b>
-        </div>
-        <div class="desc" v-if="pause && i === 1">
-          {{ el.desc }}
-        </div>
-        <div class="link" v-if="i === 1" @click="pause = !pause">
-          <font-awesome-icon :icon="['fas', 'play']" v-if="pause" />
-          <font-awesome-icon :icon="['fas', 'pause']" v-else />
+    <div class="content">
+      <h2>Nasi nauczyciele</h2>
+      <p class="intro">
+        Nasi nauczyciele to zespół doświadczonych i zaangażowanych edukatorów, którzy z pasją przekazują wiedzę.
+        Każdy z nich posiada odpowiednie kwalifikacje, a wielu z nich to egzaminatorzy, nauczyciele akademiccy lub native speakerzy.
+        Dzięki nowoczesnym metodom nauczania i indywidualnemu podejściu do ucznia, potrafią skutecznie wspierać rozwój kompetencji oraz przygotowanie do egzaminów.
+        W EduLeaf stawiamy na jakość, dlatego każdy nauczyciel przechodzi proces rekrutacji i weryfikacji umiejętności, by zagwarantować najwyższy poziom nauki.
+      </p>
+      <div class="random_people">
+        <div :class="i === 1 ? 'active_person' : 'person'" v-for="(el, i) in teachers" :key="el">
+          <div class="img">
+            <img :src="el.img" :alt="el.name">
+          </div>
+          <div class="small_desc">
+            <b>{{ el.small_desc }}</b>
+          </div>
+          <div class="desc" v-if="pause && i === 1">
+            {{ el.desc }}
+          </div>
+          <div class="link" v-if="i === 1" @click="pause = !pause">
+            <font-awesome-icon :icon="['fas', 'play']" v-if="pause" />
+            <font-awesome-icon :icon="['fas', 'pause']" v-else />
+          </div>
         </div>
       </div>
     </div>
@@ -88,6 +90,12 @@ watch(pause, () => {
 </template>
 
 <style scoped>
+.content {
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .link {
   width: 10%;
   padding: 0;
@@ -102,6 +110,7 @@ watch(pause, () => {
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
+  font-size: 1.25vw;
 }
 
 h2 {
@@ -112,7 +121,6 @@ h2 {
 }
 
 .intro {
-  font-size: 1.1rem;
   color: #374151;
   margin-bottom: 1.5rem;
   line-height: 1.6;

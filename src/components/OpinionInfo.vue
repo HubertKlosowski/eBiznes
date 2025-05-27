@@ -11,46 +11,57 @@ const submitOpinion = () => {
 
 <template>
   <div class="opinions">
-    <div class="left">
-      <h2>Opinie</h2>
-      <p class="intro">
-        Opinie naszych uczniów są dla nas najlepszym dowodem skuteczności.
-      </p>
+    <div class="content">
+      <div class="left">
+        <h2>Opinie</h2>
+        <p class="intro">
+          Opinie naszych uczniów są dla nas najlepszym dowodem skuteczności.
+        </p>
 
-      <div class="opinion-list">
-        <blockquote>
-          „Z EduLeaf zdałem maturę z matematyki! Dziękuję!” – <strong>Mateusz, Gdańsk</strong>
-        </blockquote>
-        <blockquote>
-          „Polubiłam fizykę dzięki świetnym lekcjom online.” – <strong>Klaudia, 17 lat</strong>
-        </blockquote>
+        <div class="opinion-list">
+          <blockquote>
+            „Z EduLeaf zdałem maturę z matematyki! Dziękuję!” – <strong>Mateusz, Gdańsk</strong>
+          </blockquote>
+          <blockquote>
+            „Polubiłam fizykę dzięki świetnym lekcjom online.” – <strong>Klaudia, 17 lat</strong>
+          </blockquote>
+        </div>
       </div>
-    </div>
 
-    <div class="add-opinion-form">
-      <h3>Dodaj swoją opinię</h3>
-      <form @submit.prevent="submitOpinion">
-        <input v-model="name" type="text" placeholder="Imię" required />
-        <textarea v-model="message" rows="3" placeholder="Twoja opinia" required></textarea>
-        <button type="submit" class="link">Wyślij</button>
-      </form>
+      <div class="add-opinion-form">
+        <h3>Dodaj swoją opinię</h3>
+        <form @submit.prevent="submitOpinion">
+          <input v-model="name" type="text" placeholder="Imię" required />
+          <textarea v-model="message" rows="3" placeholder="Twoja opinia" required></textarea>
+          <button type="submit" class="link">Wyślij</button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.opinions {
-  width: inherit;
-  min-height: 55vh;
-  font-size: 1.15rem;
-  background-color: #ffffff;
-  border-top: 2px solid #10b981;
-  border-bottom: 2px solid #10b981;
+.content {
+  width: 90%;
+  height: auto;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.opinions {
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-top: 2px solid #10b981;
+  border-bottom: 2px solid #10b981;
+  transition: all 0.3s ease;
+  font-size: 1.25vw;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .left {

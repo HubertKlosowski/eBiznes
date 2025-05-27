@@ -38,24 +38,33 @@ const courses = ref([
 
 <template>
   <div class="courses">
-    <h2>Nasze kursy</h2>
-    <p class="intro">
-      Oferujemy szeroki wybór kursów online dostosowanych do różnych poziomów nauczania. Nasi doświadczeni nauczyciele pomagają uczniom zrozumieć trudne zagadnienia, przygotować się do sprawdzianów i egzaminów oraz rozwijać pasję do nauki.
-    </p>
+    <div class="content">
+      <h2>Nasze kursy</h2>
+      <p class="intro">
+        Oferujemy szeroki wybór kursów online dostosowanych do różnych poziomów nauczania.<br>
+        Nasi doświadczeni nauczyciele pomagają uczniom zrozumieć trudne zagadnienia, przygotować się do sprawdzianów i egzaminów.
+      </p>
 
-    <div class="course-list">
-      <div class="course" @mouseover="show_span = i" @mouseleave="show_span = -1" v-for="(el, i) in courses" :key="el">
-        <h3>{{ el.name }}</h3>
-        <div class="desc" v-if="show_span === i">{{ el.desc }}</div>
-        <RouterLink to="/courses" class="link" v-if="show_span === i">
-          <font-awesome-icon :icon="el.icon" />
-        </RouterLink>
+      <div class="course-list">
+        <div class="course" @mouseover="show_span = i" @mouseleave="show_span = -1" v-for="(el, i) in courses" :key="el">
+          <h3>{{ el.name }}</h3>
+          <div class="desc" v-if="show_span === i">{{ el.desc }}</div>
+          <RouterLink to="/courses" class="link" v-if="show_span === i">
+            <font-awesome-icon :icon="el.icon" />
+          </RouterLink>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.content {
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .link {
   width: 20%;
   height: 20%;
@@ -74,6 +83,8 @@ const courses = ref([
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
+  font-size: 1.25vw;
+  padding-top: 1rem;
 }
 
 h2 {
@@ -84,7 +95,7 @@ h2 {
 }
 
 .intro {
-  font-size: 1.1rem;
+  font-size: 1.25vw;
   color: #374151;
   margin-bottom: 1.5rem;
   line-height: 1.6;

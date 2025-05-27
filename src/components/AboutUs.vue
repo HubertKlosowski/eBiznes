@@ -23,29 +23,31 @@ const numbers = ref([
 
 <template>
   <div class="about_us">
-    <h2>O nas</h2>
-    <p class="intro">
-      EduLeaf to nowoczesna platforma edukacyjna oferująca korepetycje i kursy online dla uczniów szkół podstawowych i średnich.
-      Łączymy najlepszych nauczycieli z technologią, aby zapewnić efektywną i elastyczną naukę.
-    </p>
-    <div class="more">
-      <div class="x">
-        <h3>Profesjonalizm</h3>
+    <div class="content">
+      <h2>O nas</h2>
+      <p class="intro">
+        EduLeaf to nowoczesna platforma edukacyjna oferująca korepetycje i kursy online dla uczniów szkół podstawowych i średnich.<br>
+        Łączymy najlepszych nauczycieli z technologią, aby zapewnić efektywną i elastyczną naukę.
+      </p>
+      <div class="more">
+        <div class="x">
+          <h3>Profesjonalizm</h3>
+        </div>
+        <div class="x">
+          <h3>Dokładność</h3>
+        </div>
+        <div class="x">
+          <h3>Rzetelność</h3>
+        </div>
       </div>
-      <div class="x">
-        <h3>Dokładność</h3>
-      </div>
-      <div class="x">
-        <h3>Rzetelność</h3>
-      </div>
-    </div>
-    <h2>Osiągnięcia</h2>
-    <div class="numbers">
-      <div class="cat" v-for="el in numbers" :key="el">
-        <h3>{{ el.category }}</h3>
-        <span v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}</span>
-        <div class="stars" v-if="el.category === 'Średnia ocena kursów'">
-          {{ el.num }}<font-awesome-icon :icon="['fas', 'star']" v-for="i in 5"/>
+      <h2>Osiągnięcia</h2>
+      <div class="numbers">
+        <div class="cat" v-for="el in numbers" :key="el">
+          <h3>{{ el.category }}</h3>
+          <span v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}</span>
+          <div class="stars" v-if="el.category === 'Średnia ocena kursów'">
+            {{ el.num }}<font-awesome-icon :icon="['fas', 'star']" v-for="i in 5"/>
+          </div>
         </div>
       </div>
     </div>
@@ -53,6 +55,12 @@ const numbers = ref([
 </template>
 
 <style scoped>
+.content {
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .stars {
   display: flex;
   flex-direction: row;
@@ -66,6 +74,7 @@ const numbers = ref([
   justify-content: space-evenly;
   align-items: center;
   padding: 1rem;
+  margin: 2rem;
 }
 
 .cat {
@@ -85,10 +94,11 @@ const numbers = ref([
   width: 100%;
   height: auto;
   margin: 0 auto;
+  padding-top: 1rem;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
-  font-size: 1.5vw;
+  font-size: 1.25vw;
 }
 
 h2 {
@@ -117,7 +127,6 @@ h2 {
 .more > .x {
   width: 20%;
   text-align: center;
-  font-size: 1rem;
   font-weight: bold;
   padding: 0.75rem 1rem;
   background-color: #ecfdf5;
