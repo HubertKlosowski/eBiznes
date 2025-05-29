@@ -49,7 +49,7 @@ const courses = ref([
         <div class="course" @mouseover="show_span = i" @mouseleave="show_span = -1" v-for="(el, i) in courses" :key="el">
           <h3>{{ el.name }}</h3>
           <div class="desc" v-if="show_span === i">{{ el.desc }}</div>
-          <RouterLink to="/courses" class="link" v-if="show_span === i">
+          <RouterLink :to="{ path: '/courses', query: { category: el.name } }" class="link" v-if="show_span === i">
             <font-awesome-icon :icon="el.icon" />
           </RouterLink>
         </div>

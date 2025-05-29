@@ -1,10 +1,12 @@
 <script setup>
-import {reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import _ from "lodash";
 import FormInputText from "@/components/FormInputText.vue";
 import Header from "@/components/Header.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const courses = ref([
   // MATEMATYKA
   {
@@ -214,9 +216,9 @@ const courses = ref([
     score: 4.5
   }
 ])
-const show_courses = ref(courses.value)
+const render_courses = ref(courses.value)
 const subjects = ref(_.uniq(_.map(courses.value, 'subject')))
-const show_info = ref(-1)
+const show_course = ref(-1)
 const filters = reactive({
   subject: '',
   price_range: {
@@ -227,24 +229,24 @@ const filters = reactive({
 })
 
 const filterCourses = () => {
-  show_courses.value = courses.value
+  render_courses.value = courses.value
   if (filters.subject !== '') {
-    show_courses.value = _.filter(show_courses.value, function (c) { return c.subject === filters.subject })
+    render_courses.value = _.filter(render_courses.value, function (c) { return c.subject === filters.subject })
   }
 
   if (filters.price_range.p_min !== null) {
-    show_courses.value = _.filter(show_courses.value, function (c) { return c.price >= filters.price_range.p_min })
+    render_courses.value = _.filter(render_courses.value, function (c) { return c.price >= filters.price_range.p_min })
   }
   if (filters.price_range.p_max !== null) {
-    show_courses.value = _.filter(show_courses.value, function (c) { return c.price <= filters.price_range.p_max })
+    render_courses.value = _.filter(render_courses.value, function (c) { return c.price <= filters.price_range.p_max })
   }
 
   if (filters.selected === 'Ocena: od najlepszej') {
-    show_courses.value = _.orderBy(show_courses.value, ['score'], ['desc'])
+    render_courses.value = _.orderBy(render_courses.value, ['score'], ['desc'])
   } else if (filters.selected === 'Cena: od najniższej') {
-    show_courses.value = _.orderBy(show_courses.value, ['price'], ['asc'])
+    render_courses.value = _.orderBy(render_courses.value, ['price'], ['asc'])
   } else if (filters.selected === 'Cena: od najwyższej') {
-    show_courses.value = _.orderBy(show_courses.value, ['price'], ['desc'])
+    render_courses.value = _.orderBy(render_courses.value, ['price'], ['desc'])
   }
 }
 
@@ -255,12 +257,19 @@ watch(filters, () => {
     filters.price_range.p_max = null
   }
 })
+
+onMounted(() => {
+  if (!_.isEmpty(route.query)) {
+    filters.subject = route.query.category
+    render_courses.value = _.filter(render_courses.value, function (c) { return c.subject === route.query.category })
+  }
+})
 </script>
 
 <template>
   <div class="courses">
     <Header></Header>
-    <div class="courses-main" v-if="show_info === -1">
+    <div class="courses-main" v-if="show_course === -1">
       <div class="courses-filters">
         <form @submit.prevent="filterCourses">
           <h2>Filtry</h2>
@@ -291,7 +300,10 @@ watch(filters, () => {
             <h4>Sortuj</h4>
           </FormInputSelect>
 
-          <button type="submit" class="submit-btn">Zastosuj</button>
+          <button
+              type="submit"
+              class="submit-btn"
+          >Zastosuj</button>
         </form>
         <div class="applied-filters">
           <span
@@ -313,13 +325,13 @@ watch(filters, () => {
         </div>
       </div>
       <div class="courses-list">
-        <div class="course" v-for="(course, i) in show_courses" :key="course">
+        <div class="course" v-for="(course, i) in render_courses" :key="course">
           <div class="important_info">
             <h3>{{ course.title }}</h3>
             <span>Cena: {{ course.price }} zł</span>
             <span>Ocena: {{ course.score }}/5</span>
           </div>
-          <div class="link" @click="show_info = i">
+          <div class="link" @click="show_course = i">
             Pokaż szczegóły
           </div>
         </div>
