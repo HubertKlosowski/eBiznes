@@ -4,7 +4,7 @@ import _ from "lodash";
 import FormInputText from "@/components/FormInputText.vue";
 import Header from "@/components/Header.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
 
 const route = useRoute()
 const courses = ref([

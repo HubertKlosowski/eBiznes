@@ -29,11 +29,10 @@ onMounted(() => {
       visibleNumbers.value.push(numbers.value[index])
       index++
     } else {
-      clearInterval(interval) // zatrzymaj, gdy wszystkie dodane
+      clearInterval(interval)
     }
-  }, 1000)
+  }, 500)
 })
-const show = ref(false)
 </script>
 
 <template>
@@ -45,15 +44,21 @@ const show = ref(false)
         Łączymy najlepszych nauczycieli z technologią, aby zapewnić efektywną i elastyczną naukę.
       </p>
       <div class="more">
-        <div class="x">
-          <h3>Profesjonalizm</h3>
-        </div>
-        <div class="x">
-          <h3>Dokładność</h3>
-        </div>
-        <div class="x">
-          <h3>Rzetelność</h3>
-        </div>
+        <Transition name="left" appear :duration="550">
+          <div class="x">
+            <h3>Profesjonalizm</h3>
+          </div>
+        </Transition>
+        <Transition name="center" appear :duration="550">
+          <div class="x">
+            <h3>Dokładność</h3>
+          </div>
+        </Transition>
+        <Transition name="right" appear :duration="550">
+          <div class="x">
+            <h3>Rzetelność</h3>
+          </div>
+        </Transition>
       </div>
       <h2>Osiągnięcia</h2>
       <div class="numbers">
@@ -72,8 +77,29 @@ const show = ref(false)
 </template>
 
 <style scoped>
+.left-enter-from, .left-leave-to {
+  transform: translateX(-60px);
+  opacity: 0;
+}
+
+.right-enter-from, .right-leave-to {
+  transform: translateX(60px);
+  opacity: 0;
+}
+
+.center-enter-from, .center-leave-to {
+  transform: translateY(-60px);
+  opacity: 0;
+}
+
 .list-enter-active span,
-.list-leave-active span {
+.list-leave-active span,
+.left-enter-active,
+.left-leave-active,
+.right-enter-active,
+.right-leave-active,
+.center-enter-active,
+.center-leave-active {
   transition: all 0.7s ease-in-out;
 }
 

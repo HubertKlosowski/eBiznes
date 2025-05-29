@@ -90,6 +90,17 @@ watch(pause, () => {
 </template>
 
 <style scoped>
+.desc {
+  width: 90%;
+  text-align: justify;
+  background-color: #065f46;
+  color: #ecfdf5;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  line-height: 1.6;
+}
+
 .content {
   width: 90%;
   height: auto;
