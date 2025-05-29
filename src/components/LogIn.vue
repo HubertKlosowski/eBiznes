@@ -17,7 +17,7 @@ const logIn = () => {
     name: 'Hubert Kłosowski',
     username: 'YsOtUuRdMeUnMt',
     email: 'example@ex.pl',
-    level: 'primary school'
+    level: 'szkoła podstawowa'
   }
   localStorage.setItem('user', JSON.stringify(usertmp))
   router.push('/account')

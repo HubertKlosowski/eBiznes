@@ -72,10 +72,10 @@ a {
   align-items: stretch;
   justify-content: space-evenly;
   margin: 0 auto;
-  background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
+  background: linear-gradient(to bottom, #f0fdf4, #ffffff);
 }
 
 .footer > * {

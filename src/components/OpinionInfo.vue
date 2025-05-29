@@ -55,13 +55,13 @@ const submitOpinion = () => {
   width: 100%;
   height: auto;
   margin: 0 auto;
-  background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
   font-size: 1.25vw;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  background: linear-gradient(to bottom, #f0fdf4, #ffffff);
 }
 
 .left {
@@ -85,6 +85,7 @@ const submitOpinion = () => {
 
 .add-opinion-form {
   width: 40%;
+  padding: 1rem;
   height: auto;
   margin-top: 2rem;
   background-color: #ffffff;
@@ -102,8 +103,8 @@ h2 {
 }
 
 .add-opinion-form input, .add-opinion-form textarea {
-  font-size: 1.15rem;
-  width: 100%;
+  font-size: 1.25vw;
+  width: 80%;
   padding: 0.5rem;
   margin-bottom: 0.75rem;
   border: 1px solid #d1d5db;

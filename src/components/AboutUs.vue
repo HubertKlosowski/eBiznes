@@ -1,24 +1,39 @@
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const numbers = ref([
   {
     category: 'Liczba uczniów',
-    num: '1000+'
+    num: 1000
   },
   {
     category: 'Liczba nauczycieli',
-    num: '100+'
+    num: 100
   },
   {
     category: 'Liczba zakupionych kursów',
-    num: '200+'
+    num: 200
   },
   {
     category: 'Średnia ocena kursów',
-    num: '5.1/5'
+    num: 4.99
   },
 ])
+
+const visibleNumbers = ref([])
+
+onMounted(() => {
+  let index = 0
+  const interval = setInterval(() => {
+    if (index < numbers.value.length) {
+      visibleNumbers.value.push(numbers.value[index])
+      index++
+    } else {
+      clearInterval(interval) // zatrzymaj, gdy wszystkie dodane
+    }
+  }, 1000)
+})
+const show = ref(false)
 </script>
 
 <template>
@@ -42,19 +57,32 @@ const numbers = ref([
       </div>
       <h2>Osiągnięcia</h2>
       <div class="numbers">
-        <div class="cat" v-for="el in numbers" :key="el">
-          <h3>{{ el.category }}</h3>
-          <span v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}</span>
-          <div class="stars" v-if="el.category === 'Średnia ocena kursów'">
-            {{ el.num }}<font-awesome-icon :icon="['fas', 'star']" v-for="i in 5"/>
+        <TransitionGroup name="list" appear>
+          <div class="cat" v-for="el in visibleNumbers" :key="el">
+            <h3>{{ el.category }}</h3>
+            <span v-if="el.category !== 'Średnia ocena kursów'">{{ el.num }}</span>
+            <span class="stars" v-if="el.category === 'Średnia ocena kursów'">
+              {{ el.num }}<font-awesome-icon :icon="['fas', 'star']" v-for="i in 5"/>
+            </span>
           </div>
-        </div>
+        </TransitionGroup>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.list-enter-active span,
+.list-leave-active span {
+  transition: all 0.7s ease-in-out;
+}
+
+.list-enter-from span,
+.list-leave-to span {
+  transform: translateX(30px);
+  opacity: 0;
+}
+
 .content {
   width: 90%;
   height: auto;
@@ -99,6 +127,7 @@ const numbers = ref([
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
   font-size: 1.25vw;
+  background: linear-gradient(to bottom, #f0fdf4, #ffffff);
 }
 
 h2 {

@@ -106,11 +106,11 @@ watch(pause, () => {
   width: 100%;
   min-height: 45vh;
   margin: 0 auto;
-  background-color: #ffffff;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
   transition: all 0.3s ease;
   font-size: 1.25vw;
+  background: linear-gradient(to bottom, #f0fdf4, #ffffff);
 }
 
 h2 {
