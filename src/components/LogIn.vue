@@ -2,6 +2,9 @@
 import {reactive, ref} from "vue";
 import FormInputText from "@/components/FormInputText.vue";
 import CreateAccount from "@/components/CreateAccount.vue";
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const user = reactive({
   username: '',
@@ -10,7 +13,14 @@ const user = reactive({
 const change_view = ref(false)
 
 const logIn = () => {
-
+  const usertmp = {
+    name: 'Hubert Kłosowski',
+    username: 'YsOtUuRdMeUnMt',
+    email: 'example@ex.pl',
+    level: 'primary school'
+  }
+  localStorage.setItem('user', JSON.stringify(usertmp))
+  router.push('/account')
 }
 </script>
 

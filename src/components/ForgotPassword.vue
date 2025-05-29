@@ -24,7 +24,7 @@ const resetPassword = () => {
       <button type="submit" class="submit-btn">Utwórz konto</button>
 
       <div class="link-row">
-        <RouterLink to="/" class="link">Wróć</RouterLink>
+        <RouterLink to="/login" class="link">Wróć</RouterLink>
       </div>
     </form>
   </div>
