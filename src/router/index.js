@@ -7,6 +7,7 @@ import Contact from "@/components/Contact.vue";
 import Account from "@/components/Account.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
 import Calendar from "@/components/Calendar.vue";
+import Course from "@/components/Course.vue";
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
   },
   {
     path: '/courses', component: Courses
+  },
+  {
+    path: '/courses/:id',
+    component: Course,
+    props: true
   },
   {
     path: '/contact', component: Contact

@@ -4,8 +4,9 @@ import _ from "lodash";
 import FormInputText from "@/components/FormInputText.vue";
 import Header from "@/components/Header.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
+const router = useRouter()
 const route = useRoute()
 const courses = ref([
   // MATEMATYKA
@@ -13,7 +14,7 @@ const courses = ref([
     subject: 'Matematyka',
     title: 'Algebra od podstaw',
     desc: 'Naucz się działań na wyrażeniach algebraicznych, równaniach i układach równań.',
-    level: 'beginner',
+    level: 'liceum',
     duration: 20,
     max_people: 15,
     price: 199,
@@ -23,7 +24,7 @@ const courses = ref([
     subject: 'Matematyka',
     title: 'Analiza matematyczna I',
     desc: 'Granice, ciągłość, pochodne i całki funkcji jednej zmiennej.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 30,
     max_people: 20,
     price: 249,
@@ -33,7 +34,7 @@ const courses = ref([
     subject: 'Matematyka',
     title: 'Geometria analityczna',
     desc: 'Proste, okręgi i krzywe w układzie współrzędnych.',
-    level: 'beginner',
+    level: 'liceum',
     duration: 18,
     max_people: 12,
     price: 189,
@@ -43,7 +44,7 @@ const courses = ref([
     subject: 'Matematyka',
     title: 'Kurs z kombinatoryki i rachunku prawdopodobieństwa',
     desc: 'Wprowadzenie do permutacji, kombinacji i pojęć prawdopodobieństwa.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 22,
     max_people: 18,
     price: 229,
@@ -53,7 +54,7 @@ const courses = ref([
     subject: 'Matematyka',
     title: 'Matematyka dla maturzystów',
     desc: 'Powtórka całego materiału z matematyki do matury.',
-    level: 'advanced',
+    level: 'technikum',
     duration: 40,
     max_people: 25,
     price: 299,
@@ -65,7 +66,7 @@ const courses = ref([
     subject: 'Fizyka',
     title: 'Mechanika klasyczna',
     desc: 'Kinematyka, dynamika, energia i pęd – od podstaw.',
-    level: 'beginner',
+    level: 'liceum',
     duration: 25,
     max_people: 15,
     price: 219,
@@ -75,7 +76,7 @@ const courses = ref([
     subject: 'Fizyka',
     title: 'Elektryczność i magnetyzm',
     desc: 'Pola elektryczne, napięcie, prąd i zjawiska magnetyczne.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 28,
     max_people: 12,
     price: 239,
@@ -85,7 +86,7 @@ const courses = ref([
     subject: 'Fizyka',
     title: 'Fizyka kwantowa w pigułce',
     desc: 'Podstawy mechaniki kwantowej dla uczniów i studentów.',
-    level: 'advanced',
+    level: 'technikum',
     duration: 30,
     max_people: 10,
     price: 299,
@@ -95,7 +96,7 @@ const courses = ref([
     subject: 'Fizyka',
     title: 'Fizyka do matury',
     desc: 'Intensywny kurs przygotowawczy z teorii i zadań maturalnych.',
-    level: 'advanced',
+    level: 'technikum',
     duration: 35,
     max_people: 20,
     price: 269,
@@ -105,7 +106,7 @@ const courses = ref([
     subject: 'Fizyka',
     title: 'Termodynamika i fale',
     desc: 'Zrozumienie ciepła, pracy, fali dźwiękowych i ich zastosowań.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 24,
     max_people: 16,
     price: 229,
@@ -117,7 +118,7 @@ const courses = ref([
     subject: 'Chemia',
     title: 'Chemia ogólna',
     desc: 'Atomy, związki chemiczne, reakcje i prawa chemiczne.',
-    level: 'beginner',
+    level: 'liceum',
     duration: 20,
     max_people: 15,
     price: 199,
@@ -127,7 +128,7 @@ const courses = ref([
     subject: 'Chemia',
     title: 'Chemia organiczna',
     desc: 'Związki węgla, grupy funkcyjne i reakcje organiczne.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 30,
     max_people: 12,
     price: 249,
@@ -137,7 +138,7 @@ const courses = ref([
     subject: 'Chemia',
     title: 'Chemia analityczna',
     desc: 'Metody oznaczania składu chemicznego substancji.',
-    level: 'advanced',
+    level: 'technikum',
     duration: 28,
     max_people: 10,
     price: 259,
@@ -147,7 +148,7 @@ const courses = ref([
     subject: 'Chemia',
     title: 'Chemia do matury',
     desc: 'Przygotowanie do egzaminu maturalnego z chemii.',
-    level: 'advanced',
+    level: 'technikum',
     duration: 32,
     max_people: 20,
     price: 279,
@@ -157,7 +158,7 @@ const courses = ref([
     subject: 'Chemia',
     title: 'Chemia fizyczna',
     desc: 'Termochemia, kinetyka chemiczna, równowaga i elektrochemia.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 26,
     max_people: 14,
     price: 239,
@@ -169,7 +170,7 @@ const courses = ref([
     subject: 'Biologia',
     title: 'Biologia komórki',
     desc: 'Budowa i funkcje komórek prokariotycznych i eukariotycznych.',
-    level: 'beginner',
+    level: 'liceum',
     duration: 20,
     max_people: 15,
     price: 189,
@@ -179,7 +180,7 @@ const courses = ref([
     subject: 'Biologia',
     title: 'Genetyka',
     desc: 'Dziedziczenie cech, DNA, RNA i inżynieria genetyczna.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 25,
     max_people: 12,
     price: 239,
@@ -189,7 +190,7 @@ const courses = ref([
     subject: 'Biologia',
     title: 'Biologia człowieka',
     desc: 'Układy narządów, homeostaza, fizjologia człowieka.',
-    level: 'intermediate',
+    level: 'studia',
     duration: 24,
     max_people: 15,
     price: 229,
@@ -199,7 +200,7 @@ const courses = ref([
     subject: 'Biologia',
     title: 'Ekologia i ewolucja',
     desc: 'Zasady ekologii, dobór naturalny, mechanizmy ewolucyjne.',
-    level: 'beginner',
+    level: 'liceum',
     duration: 22,
     max_people: 18,
     price: 219,
@@ -209,7 +210,7 @@ const courses = ref([
     subject: 'Biologia',
     title: 'Biologia do matury',
     desc: 'Powtórzenie materiału z biologii do egzaminu maturalnego.',
-    level: 'advanced',
+    level: 'technikum',
     duration: 35,
     max_people: 20,
     price: 279,
@@ -218,7 +219,6 @@ const courses = ref([
 ])
 const render_courses = ref(courses.value)
 const subjects = ref(_.uniq(_.map(courses.value, 'subject')))
-const show_course = ref(-1)
 const filters = reactive({
   subject: '',
   price_range: {
@@ -250,6 +250,10 @@ const filterCourses = () => {
   }
 }
 
+const goToCourse = (i) => {
+  router.push(`/courses/${i}`)
+}
+
 watch(filters, () => {
   if (filters.price_range.p_min === '') {
     filters.price_range.p_min = null
@@ -269,7 +273,7 @@ onMounted(() => {
 <template>
   <div class="courses">
     <Header></Header>
-    <div class="courses-main" v-if="show_course === -1">
+    <div class="courses-main">
       <div class="courses-filters">
         <form @submit.prevent="filterCourses">
           <h2>Filtry</h2>
@@ -331,14 +335,11 @@ onMounted(() => {
             <span>Cena: {{ course.price }} zł</span>
             <span>Ocena: {{ course.score }}/5</span>
           </div>
-          <div class="link" @click="show_course = i">
+          <div @click="goToCourse(i)" class="link">
             Pokaż szczegóły
           </div>
         </div>
       </div>
-    </div>
-    <div class="courses-main" v-else>
-
     </div>
   </div>
 </template>
