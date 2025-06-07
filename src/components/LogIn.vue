@@ -3,6 +3,7 @@ import {reactive, ref} from "vue";
 import FormInputText from "@/components/FormInputText.vue";
 import CreateAccount from "@/components/CreateAccount.vue";
 import { useRouter } from 'vue-router'
+import FormButton from "@/components/FormButton.vue";
 
 const router = useRouter()
 
@@ -44,7 +45,11 @@ const logIn = () => {
           v-model:input_value="user.password"
       ></FormInputText>
 
-      <button type="submit" class="submit-btn">Zaloguj się</button>
+      <FormButton :reset="false">
+        <template v-slot:green>
+          Zaloguj się
+        </template>
+      </FormButton>
 
       <div class="link-row">
         <RouterLink to="/forgot_passwd" class="link">Nie pamiętasz hasła?</RouterLink>

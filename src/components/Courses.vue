@@ -5,219 +5,12 @@ import FormInputText from "@/components/FormInputText.vue";
 import Header from "@/components/Header.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
 import { useRoute, useRouter } from 'vue-router';
+import FormButton from "@/components/FormButton.vue";
 
 const router = useRouter()
 const route = useRoute()
-const courses = ref([
-  // MATEMATYKA
-  {
-    subject: 'Matematyka',
-    title: 'Algebra od podstaw',
-    desc: 'Naucz się działań na wyrażeniach algebraicznych, równaniach i układach równań.',
-    level: 'liceum',
-    duration: 20,
-    max_people: 15,
-    price: 199,
-    score: 3
-  },
-  {
-    subject: 'Matematyka',
-    title: 'Analiza matematyczna I',
-    desc: 'Granice, ciągłość, pochodne i całki funkcji jednej zmiennej.',
-    level: 'studia',
-    duration: 30,
-    max_people: 20,
-    price: 249,
-    score: 1
-  },
-  {
-    subject: 'Matematyka',
-    title: 'Geometria analityczna',
-    desc: 'Proste, okręgi i krzywe w układzie współrzędnych.',
-    level: 'liceum',
-    duration: 18,
-    max_people: 12,
-    price: 189,
-    score: 5
-  },
-  {
-    subject: 'Matematyka',
-    title: 'Kurs z kombinatoryki i rachunku prawdopodobieństwa',
-    desc: 'Wprowadzenie do permutacji, kombinacji i pojęć prawdopodobieństwa.',
-    level: 'studia',
-    duration: 22,
-    max_people: 18,
-    price: 229,
-    score: 1
-  },
-  {
-    subject: 'Matematyka',
-    title: 'Matematyka dla maturzystów',
-    desc: 'Powtórka całego materiału z matematyki do matury.',
-    level: 'technikum',
-    duration: 40,
-    max_people: 25,
-    price: 299,
-    score: 4
-  },
-
-  // FIZYKA
-  {
-    subject: 'Fizyka',
-    title: 'Mechanika klasyczna',
-    desc: 'Kinematyka, dynamika, energia i pęd – od podstaw.',
-    level: 'liceum',
-    duration: 25,
-    max_people: 15,
-    price: 219,
-    score: 2
-  },
-  {
-    subject: 'Fizyka',
-    title: 'Elektryczność i magnetyzm',
-    desc: 'Pola elektryczne, napięcie, prąd i zjawiska magnetyczne.',
-    level: 'studia',
-    duration: 28,
-    max_people: 12,
-    price: 239,
-    score: 5
-  },
-  {
-    subject: 'Fizyka',
-    title: 'Fizyka kwantowa w pigułce',
-    desc: 'Podstawy mechaniki kwantowej dla uczniów i studentów.',
-    level: 'technikum',
-    duration: 30,
-    max_people: 10,
-    price: 299,
-    score: 1
-  },
-  {
-    subject: 'Fizyka',
-    title: 'Fizyka do matury',
-    desc: 'Intensywny kurs przygotowawczy z teorii i zadań maturalnych.',
-    level: 'technikum',
-    duration: 35,
-    max_people: 20,
-    price: 269,
-    score: 3
-  },
-  {
-    subject: 'Fizyka',
-    title: 'Termodynamika i fale',
-    desc: 'Zrozumienie ciepła, pracy, fali dźwiękowych i ich zastosowań.',
-    level: 'studia',
-    duration: 24,
-    max_people: 16,
-    price: 229,
-    score: 1
-  },
-
-  // CHEMIA
-  {
-    subject: 'Chemia',
-    title: 'Chemia ogólna',
-    desc: 'Atomy, związki chemiczne, reakcje i prawa chemiczne.',
-    level: 'liceum',
-    duration: 20,
-    max_people: 15,
-    price: 199,
-    score: 1
-  },
-  {
-    subject: 'Chemia',
-    title: 'Chemia organiczna',
-    desc: 'Związki węgla, grupy funkcyjne i reakcje organiczne.',
-    level: 'studia',
-    duration: 30,
-    max_people: 12,
-    price: 249,
-    score: 2
-  },
-  {
-    subject: 'Chemia',
-    title: 'Chemia analityczna',
-    desc: 'Metody oznaczania składu chemicznego substancji.',
-    level: 'technikum',
-    duration: 28,
-    max_people: 10,
-    price: 259,
-    score: 3
-  },
-  {
-    subject: 'Chemia',
-    title: 'Chemia do matury',
-    desc: 'Przygotowanie do egzaminu maturalnego z chemii.',
-    level: 'technikum',
-    duration: 32,
-    max_people: 20,
-    price: 279,
-    score: 5
-  },
-  {
-    subject: 'Chemia',
-    title: 'Chemia fizyczna',
-    desc: 'Termochemia, kinetyka chemiczna, równowaga i elektrochemia.',
-    level: 'studia',
-    duration: 26,
-    max_people: 14,
-    price: 239,
-    score: 4
-  },
-
-  // BIOLOGIA
-  {
-    subject: 'Biologia',
-    title: 'Biologia komórki',
-    desc: 'Budowa i funkcje komórek prokariotycznych i eukariotycznych.',
-    level: 'liceum',
-    duration: 20,
-    max_people: 15,
-    price: 189,
-    score: 4
-  },
-  {
-    subject: 'Biologia',
-    title: 'Genetyka',
-    desc: 'Dziedziczenie cech, DNA, RNA i inżynieria genetyczna.',
-    level: 'studia',
-    duration: 25,
-    max_people: 12,
-    price: 239,
-    score: 3.5
-  },
-  {
-    subject: 'Biologia',
-    title: 'Biologia człowieka',
-    desc: 'Układy narządów, homeostaza, fizjologia człowieka.',
-    level: 'studia',
-    duration: 24,
-    max_people: 15,
-    price: 229,
-    score: 1.7
-  },
-  {
-    subject: 'Biologia',
-    title: 'Ekologia i ewolucja',
-    desc: 'Zasady ekologii, dobór naturalny, mechanizmy ewolucyjne.',
-    level: 'liceum',
-    duration: 22,
-    max_people: 18,
-    price: 219,
-    score: 2.5
-  },
-  {
-    subject: 'Biologia',
-    title: 'Biologia do matury',
-    desc: 'Powtórzenie materiału z biologii do egzaminu maturalnego.',
-    level: 'technikum',
-    duration: 35,
-    max_people: 20,
-    price: 279,
-    score: 4.5
-  }
-])
-const render_courses = ref(courses.value)
+const courses = ref(null)
+const render_courses = ref(null)
 const subjects = ref(_.uniq(_.map(courses.value, 'subject')))
 const filters = reactive({
   subject: '',
@@ -250,6 +43,200 @@ const filterCourses = () => {
   }
 }
 
+// ścieżka do backendu
+const getCourses = () => {
+  courses.value = [// MATEMATYKA
+  {
+    subject: 'Matematyka',
+    title: 'Algebra od podstaw',
+    desc: 'Naucz się działań na wyrażeniach algebraicznych, równaniach i układach równań.',
+    level: 'liceum',
+    duration: 20,
+    price: 199,
+    score: 3
+  },
+  {
+    subject: 'Matematyka',
+    title: 'Analiza matematyczna I',
+    desc: 'Granice, ciągłość, pochodne i całki funkcji jednej zmiennej.',
+    level: 'studia',
+    duration: 30,
+    price: 249,
+    score: 1
+  },
+  {
+    subject: 'Matematyka',
+    title: 'Geometria analityczna',
+    desc: 'Proste, okręgi i krzywe w układzie współrzędnych.',
+    level: 'liceum',
+    duration: 18,
+    price: 189,
+    score: 5
+  },
+  {
+    subject: 'Matematyka',
+    title: 'Kurs z kombinatoryki i rachunku prawdopodobieństwa',
+    desc: 'Wprowadzenie do permutacji, kombinacji i pojęć prawdopodobieństwa.',
+    level: 'studia',
+    duration: 22,
+    price: 229,
+    score: 1
+  },
+  {
+    subject: 'Matematyka',
+    title: 'Matematyka dla maturzystów',
+    desc: 'Powtórka całego materiału z matematyki do matury.',
+    level: 'technikum',
+    duration: 40,
+    price: 299,
+    score: 4
+  },
+
+  // FIZYKA
+  {
+    subject: 'Fizyka',
+    title: 'Mechanika klasyczna',
+    desc: 'Kinematyka, dynamika, energia i pęd – od podstaw.',
+    level: 'liceum',
+    duration: 25,
+    price: 219,
+    score: 2
+  },
+  {
+    subject: 'Fizyka',
+    title: 'Elektryczność i magnetyzm',
+    desc: 'Pola elektryczne, napięcie, prąd i zjawiska magnetyczne.',
+    level: 'studia',
+    duration: 28,
+    price: 239,
+    score: 5
+  },
+  {
+    subject: 'Fizyka',
+    title: 'Fizyka kwantowa w pigułce',
+    desc: 'Podstawy mechaniki kwantowej dla uczniów i studentów.',
+    level: 'technikum',
+    duration: 30,
+    price: 299,
+    score: 1
+  },
+  {
+    subject: 'Fizyka',
+    title: 'Fizyka do matury',
+    desc: 'Intensywny kurs przygotowawczy z teorii i zadań maturalnych.',
+    level: 'technikum',
+    duration: 35,
+    price: 269,
+    score: 3
+  },
+  {
+    subject: 'Fizyka',
+    title: 'Termodynamika i fale',
+    desc: 'Zrozumienie ciepła, pracy, fali dźwiękowych i ich zastosowań.',
+    level: 'studia',
+    duration: 24,
+    price: 229,
+    score: 1
+  },
+
+  // CHEMIA
+  {
+    subject: 'Chemia',
+    title: 'Chemia ogólna',
+    desc: 'Atomy, związki chemiczne, reakcje i prawa chemiczne.',
+    level: 'liceum',
+    duration: 20,
+    price: 199,
+    score: 1
+  },
+  {
+    subject: 'Chemia',
+    title: 'Chemia organiczna',
+    desc: 'Związki węgla, grupy funkcyjne i reakcje organiczne.',
+    level: 'studia',
+    duration: 30,
+    price: 249,
+    score: 2
+  },
+  {
+    subject: 'Chemia',
+    title: 'Chemia analityczna',
+    desc: 'Metody oznaczania składu chemicznego substancji.',
+    level: 'technikum',
+    duration: 28,
+    price: 259,
+    score: 3
+  },
+  {
+    subject: 'Chemia',
+    title: 'Chemia do matury',
+    desc: 'Przygotowanie do egzaminu maturalnego z chemii.',
+    level: 'technikum',
+    duration: 32,
+    price: 279,
+    score: 5
+  },
+  {
+    subject: 'Chemia',
+    title: 'Chemia fizyczna',
+    desc: 'Termochemia, kinetyka chemiczna, równowaga i elektrochemia.',
+    level: 'studia',
+    duration: 26,
+    price: 239,
+    score: 4
+  },
+
+  // BIOLOGIA
+  {
+    subject: 'Biologia',
+    title: 'Biologia komórki',
+    desc: 'Budowa i funkcje komórek prokariotycznych i eukariotycznych.',
+    level: 'liceum',
+    duration: 20,
+    price: 189,
+    score: 4
+  },
+  {
+    subject: 'Biologia',
+    title: 'Genetyka',
+    desc: 'Dziedziczenie cech, DNA, RNA i inżynieria genetyczna.',
+    level: 'studia',
+    duration: 25,
+    price: 239,
+    score: 3.5
+  },
+  {
+    subject: 'Biologia',
+    title: 'Biologia człowieka',
+    desc: 'Układy narządów, homeostaza, fizjologia człowieka.',
+    level: 'studia',
+    duration: 24,
+    price: 229,
+    score: 1.7
+  },
+  {
+    subject: 'Biologia',
+    title: 'Ekologia i ewolucja',
+    desc: 'Zasady ekologii, dobór naturalny, mechanizmy ewolucyjne.',
+    level: 'liceum',
+    duration: 22,
+    price: 219,
+    score: 2.5
+  },
+  {
+    subject: 'Biologia',
+    title: 'Biologia do matury',
+    desc: 'Powtórzenie materiału z biologii do egzaminu maturalnego.',
+    level: 'technikum',
+    duration: 35,
+    price: 279,
+    score: 4.5
+  }
+]
+  render_courses.value = courses.value
+  localStorage.setItem('courses', JSON.stringify(courses.value))
+}
+
 const goToCourse = (i) => {
   router.push(`/courses/${i}`)
 }
@@ -263,6 +250,7 @@ watch(filters, () => {
 })
 
 onMounted(() => {
+  getCourses()
   if (!_.isEmpty(route.query)) {
     filters.subject = route.query.category
     render_courses.value = _.filter(render_courses.value, function (c) { return c.subject === route.query.category })
@@ -304,10 +292,11 @@ onMounted(() => {
             <h4>Sortuj</h4>
           </FormInputSelect>
 
-          <button
-              type="submit"
-              class="submit-btn"
-          >Zastosuj</button>
+          <FormButton :reset="false">
+            <template v-slot:green>
+              Zastosuj
+            </template>
+          </FormButton>
         </form>
         <div class="applied-filters">
           <span

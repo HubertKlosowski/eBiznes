@@ -1,6 +1,7 @@
 <script setup>
 import FormInputText from "@/components/FormInputText.vue";
 import {ref} from "vue";
+import FormButton from "@/components/FormButton.vue";
 
 const email = ref('')
 
@@ -21,7 +22,11 @@ const resetPassword = () => {
           v-model:input_value="email"
       ></FormInputText>
 
-      <button type="submit" class="submit-btn">Utwórz konto</button>
+      <FormButton :reset="false">
+        <template v-slot:green>
+          Wyślij
+        </template>
+      </FormButton>
 
       <div class="link-row">
         <RouterLink to="/login" class="link">Wróć</RouterLink>
