@@ -13,11 +13,20 @@ const meeting = reactive({
   title: '',
   teacher: '',
   date: '',
-  time: ''
+  time_start: '',
+  time_end: ''
 })
+
+const parseTime = (timeStr) => {
+  const [h, m] = timeStr.split(':').map(Number)
+  return h * 60 + m
+}
 
 // ścieżka do backendu
 const addMeeting = () => {
+  if (parseTime(meeting.time_start) >= parseTime(meeting.time_end)) {
+    console.log('Błąd: Godzina zakończenia musi być późniejsza niż rozpoczęcia')
+  }
   console.log('Nowe spotkanie:', meeting)
   show_meeting.value = false
 }
@@ -45,9 +54,16 @@ watch(() => props.date, (newDate) => {
 
       <FormInputSelect
         :select_values="['16:00', '17:00', '18:00', '19:00', '20:00', '21:00']"
-        :input_value="meeting.time"
+        :input_value="meeting.time_start"
       >
-        <label>Godzina</label>
+        <label>Godzina rozpoczęcia</label>
+      </FormInputSelect>
+
+      <FormInputSelect
+        :select_values="['16:00', '17:00', '18:00', '19:00', '20:00', '21:00']"
+        :input_value="meeting.time_end"
+      >
+        <label>Godzina zakończenia</label>
       </FormInputSelect>
 
       <FormButton :reset="true" @redEvent="() => { show_meeting = false }">
