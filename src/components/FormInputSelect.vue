@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['select_values', 'title'])
+const props = defineProps(['select_values'])
 const input_value = defineModel('input_value')
 </script>
 

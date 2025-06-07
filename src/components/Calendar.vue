@@ -1,55 +1,72 @@
 <script setup>
 
 import Header from "@/components/Header.vue";
-import {computed, reactive, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-const months = ref([
+const today = ref(new Date())
+const month = ref(new Date().getMonth() + 1)
+const day_names = ref([
+  "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"
+])
+const month_names = ref([
   "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
   "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
 ])
-const dayofweek = ref([
-  "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"
-])
+let timer = null
 
-const today = ref(new Date().getDate() + ' ' + new Date().getMonth() + ' ' + new Date().getFullYear())
-const num_of_days = ref(31)
-const c = ref(0)
-const choose = reactive({
-  year: 0,
-  month: 0,
-  day: 0
+const changeDate = (param) => {
+  const current = today.value
+  const newMonth = current.getMonth() + param
+  today.value = new Date(current.getFullYear(), newMonth, 1)
+}
+
+const daysInMonth = computed(() => {
+  return new Date(today.value.getFullYear(), today.value.getMonth() + 1, 0).getDate()
 })
 
-const changeView = (param) => {
-  if (param.unit === 'year') {
-    choose.year = param.value
-    c.value = 1
-  } else if (param.unit === 'month') {
-    choose.month = param.value
-    c.value = 2
-    calculateNumOfDays()
-  } else if (param.unit === 'day') {
-    choose.day = param.value
-    c.value = 3
-  }
-}
+const startOffset = computed(() => {
+  const first = new Date(today.value.getFullYear(), today.value.getMonth(), 1).getDay()
+  return first === 0 ? 6 : first - 1
+})
 
-const calculateNumOfDays = () => {
-  if (choose.year % 4 === 0 && choose.month === 1) {
-    num_of_days.value = 29
-  } else if (choose.year % 4 !== 0 && choose.month === 1) {
-    num_of_days.value = 28
-  } else {
-    num_of_days.value = 31 ? 31 : 10
+const calendarDays = computed(() => {
+  const total = startOffset.value + daysInMonth.value
+  const arr = []
+  for (let i = 0; i < total; i++) {
+    if (i < startOffset.value) {
+      arr.push(null)
+    } else {
+      arr.push(i - startOffset.value + 1)
+    }
   }
-}
+  return arr
+})
 
-const formattedDate = computed(() => {
-  const parts = []
-  if (choose.day !== 0) parts.push(choose.day.toString().padStart(2, '0'))
-  if (choose.month !== 0) parts.push(months.value[choose.month])
-  parts.push(choose.year)
-  return parts.join(' ')
+const monthName = computed(() => month_names.value[today.value.getMonth()])
+const year = computed(() => today.value.getFullYear())
+
+onMounted(() => {
+  timer = setInterval(() => {
+    today.value = new Date()
+  }, 1000)
+})
+
+watch(today, () => {
+  const now = new Date()
+  if (today.value.getMonth() !== now.getMonth()) {
+    clearInterval(timer)
+    timer = null
+  } else if (!timer) {
+    today.value = new Date()
+    timer = setInterval(() => {
+      today.value = new Date()
+    }, 1000)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (timer) clearInterval(timer)
 })
 </script>
 
@@ -57,56 +74,48 @@ const formattedDate = computed(() => {
   <div class="calendar">
     <Header></Header>
     <div class="info">
-      <div class="cl" v-if="choose.year !== 0">
+      <h2>Twój kalendarz</h2>
+    </div>
+    <div class="arrows">
+      <div class="link" @click="changeDate(-1)">
         <font-awesome-icon :icon="['fas', 'arrow-left']" />
       </div>
-      <h2 v-if="choose.year === 0">Twój kalendarz</h2>
-      <h2 v-else>
-        {{ formattedDate }}
-      </h2>
-      <div class="cl" v-if="choose.year !== 0">
+      <div class="today" v-if="month === new Date().getMonth() + 1">
+        <h2>
+          {{ String(today.getDate()).padStart(2, '0') }}.
+          {{ String(today.getMonth() + 1).padStart(2, '0') }}.
+          {{ String(today.getFullYear()).padStart(2, '0') }}
+        </h2>
+        <h2>
+          {{ String(today.getHours()).padStart(2, '0') }}:
+          {{ String(today.getMinutes()).padStart(2, '0') }}:
+          {{ String(today.getSeconds()).padStart(2, '0') }}
+        </h2>
+      </div>
+      <div class="today" v-else>
+        <h2>{{ monthName }} {{ year }}</h2>
+      </div>
+      <div class="link" @click="changeDate(1)">
         <font-awesome-icon :icon="['fas', 'arrow-right']" />
       </div>
     </div>
-    <div class="year" v-if="c === 0">
-      <div class="element" v-for="rok in 12" @click="changeView({
-      unit: 'year',
-      value: rok + new Date().getFullYear() - 2
-      })">
-        <div class="t">
-          {{ rok + new Date().getFullYear() - 2 }}
-        </div>
-        <div class="events">
-          <font-awesome-icon :icon="['fas', 'circle-info']" />
-          <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
+    <div class="month">
+      <div class="week" style="border: none">
+        <div class="day" v-for="i in 7" :key="i">
+          {{ day_names[i - 1] }}
         </div>
       </div>
-    </div>
-    <div class="month" v-else-if="c === 1">
-      <div class="element" v-for="mc in 12" @click="changeView({
-      unit: 'month',
-      value: mc - 1
-      })">
-        <div class="t">
-          {{ months[mc - 1] }}
-        </div>
-        <div class="events">
-          <font-awesome-icon :icon="['fas', 'circle-info']" />
-          <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
-        </div>
-      </div>
-    </div>
-    <div class="day" v-else-if="c === 2">
-      <div class="element" v-for="d in num_of_days" @click="changeView({
-      unit: 'day',
-      value: d
-      })">
-        <div class="t">
-          {{ d }}
-        </div>
-        <div class="events">
-          <font-awesome-icon :icon="['fas', 'circle-info']" />
-          <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
+      <div class="week" v-for="(week, i) in 6" :key="i">
+        <div class="day" v-for="j in 7" :key="j" :style="{
+          backgroundColor: j === 7 ? '#fef2f2' : '#ffffff'
+        }">
+          <div class="num" :style="{
+            color: j === 7 ? '#b91c1c' : '#1f2937',
+            fontWeight: '500',
+            fontSize: '2vw'
+          }">
+            {{ calendarDays[(i * 7) + j - 1] || '' }}
+          </div>
         </div>
       </div>
     </div>
@@ -114,55 +123,71 @@ const formattedDate = computed(() => {
 </template>
 
 <style scoped>
-.cl {
-  border: 2px solid black;
-  padding: 1rem;
-  border-radius: 1.5rem;
-  font-size: 1.5vw;
+.num {
+  font-weight: bold;
 }
 
-.events {
-  font-size: larger;
+.day {
+  width: calc(100% / 7);
+  height: 100%;
+  background-color: white;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.element {
-  width: 60%;
-  height: 60%;
+.week {
+  height: 15%;
+  background-color: red;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  border: 2px solid black;
-  font-size: 1.5vw;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.element:hover {
-  transform: scale(1.03);
+.day:first-of-type {
+  border-left: 2px solid black;
 }
 
-.year, .month, .day {
-  width: 100%;
+.week:last-of-type {
+  border-bottom: 2px solid black;
+}
+
+.month {
+  width: 90%;
   height: 50%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  row-gap: 0.5rem;
-  column-gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.arrows {
+  width: 100%;
+  height: 7%;
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  place-items: center;
 }
 
 .info {
-  width: 100%;
-  min-height: 15%;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 10%;
+}
+
+.today {
+  width: 30%;
+  display: flex;
+  flex-direction: row;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 .calendar {
