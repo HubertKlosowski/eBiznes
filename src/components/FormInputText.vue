@@ -59,9 +59,9 @@ input[type="password"] {
 }
 
 label {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.25vw;
   color: #374151;
+  text-align: center;
 }
 
 input {

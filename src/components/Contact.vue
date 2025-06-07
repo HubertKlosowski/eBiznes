@@ -52,16 +52,18 @@ const show_info = ref(-1)
   <div class="contact">
     <Header></Header>
     <div class="frequently-asked">
-      <h2>Często zadawane pytania</h2>
-      <div class="questions">
-        <div class="row" v-for="(qa, i) in questions" :key="qa">
-          <div class="q">
-            <span><b>Pytanie: </b>{{ qa.q }}</span>
-            <font-awesome-icon :icon="['fas', 'arrow-up']" class="link" @click="show_info = -1" v-if="show_info === i" />
-            <font-awesome-icon :icon="['fas', 'arrow-down']" class="link" @click="show_info = i" v-else />
-          </div>
-          <div class="a" v-if="show_info === i">
-            <span><b>Odpowiedź: </b>{{ qa.a }}</span>
+      <div class="tmp">
+        <h2>Często zadawane pytania</h2>
+        <div class="questions">
+          <div class="row" v-for="(qa, i) in questions" :key="qa">
+            <div class="q">
+              <span><b>Pytanie: </b>{{ qa.q }}</span>
+              <font-awesome-icon :icon="['fas', 'arrow-up']" class="link" @click="show_info = -1" v-if="show_info === i" />
+              <font-awesome-icon :icon="['fas', 'arrow-down']" class="link" @click="show_info = i" v-else />
+            </div>
+            <div class="a" v-if="show_info === i">
+              <span><b>Odpowiedź: </b>{{ qa.a }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -78,11 +80,21 @@ const show_info = ref(-1)
   align-content: center;
 }
 
+.tmp {
+  width: 90%;
+  padding: 1rem;
+  margin: 1rem;
+}
+
 .frequently-asked {
   width: 100%;
   margin: 0 auto;
   border-top: 2px solid #10b981;
   border-bottom: 2px solid #10b981;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .frequently-asked h2 {

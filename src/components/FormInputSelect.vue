@@ -5,7 +5,9 @@ const input_value = defineModel('input_value')
 
 <template>
   <div class="form-row">
-    <slot></slot>
+    <div style="margin-bottom: 0.5rem">
+      <slot></slot>
+    </div>
     <select v-model="input_value">
       <option disabled value="">Wybierz jedną z opcji</option>
       <option v-for="value in props.select_values" :key="value">{{ value }}</option>

@@ -68,5 +68,8 @@ const resetPassword = () => {
   text-align: center;
   font-size: 0.95rem;
   color: #6b7280;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>

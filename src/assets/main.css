@@ -24,7 +24,7 @@ html, body {
     height: auto;
     background-color: #f0fdf4;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 1rem;

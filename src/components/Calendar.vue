@@ -3,9 +3,11 @@
 import Header from "@/components/Header.vue";
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import AddMeeting from "@/components/AddMeeting.vue";
 
 const today = ref(new Date())
-const month = ref(new Date().getMonth() + 1)
+const date = ref('')
+const show_meeting = ref(false)
 const day_names = ref([
   "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"
 ])
@@ -19,6 +21,15 @@ const changeDate = (param) => {
   const current = today.value
   const newMonth = current.getMonth() + param
   today.value = new Date(current.getFullYear(), newMonth, 1)
+}
+
+const addMeeting = (day) => {
+  if (day !== '') {
+    const year = today.value.getFullYear()
+    const month = today.value.getMonth()
+    date.value = new Date(year, month, day)
+    show_meeting.value = true
+  }
 }
 
 const daysInMonth = computed(() => {
@@ -80,19 +91,7 @@ onBeforeUnmount(() => {
       <div class="link" @click="changeDate(-1)">
         <font-awesome-icon :icon="['fas', 'arrow-left']" />
       </div>
-      <div class="today" v-if="month === new Date().getMonth() + 1">
-        <h2>
-          {{ String(today.getDate()).padStart(2, '0') }}.
-          {{ String(today.getMonth() + 1).padStart(2, '0') }}.
-          {{ String(today.getFullYear()).padStart(2, '0') }}
-        </h2>
-        <h2>
-          {{ String(today.getHours()).padStart(2, '0') }}:
-          {{ String(today.getMinutes()).padStart(2, '0') }}:
-          {{ String(today.getSeconds()).padStart(2, '0') }}
-        </h2>
-      </div>
-      <div class="today" v-else>
+      <div class="today">
         <h2>{{ monthName }} {{ year }}</h2>
       </div>
       <div class="link" @click="changeDate(1)">
@@ -101,30 +100,51 @@ onBeforeUnmount(() => {
     </div>
     <div class="month">
       <div class="week" style="border: none">
-        <div class="day" v-for="i in 7" :key="i">
+        <div class="day" v-for="i in 7" :key="i" style="font-weight: 600">
           {{ day_names[i - 1] }}
         </div>
       </div>
       <div class="week" v-for="(week, i) in 6" :key="i">
         <div class="day" v-for="j in 7" :key="j" :style="{
           backgroundColor: j === 7 ? '#fef2f2' : '#ffffff'
-        }">
-          <div class="num" :style="{
-            color: j === 7 ? '#b91c1c' : '#1f2937',
-            fontWeight: '500',
-            fontSize: '2vw'
-          }">
+        }" @click="addMeeting(calendarDays[(i * 7) + j - 1] || '')">
+          <div
+              class="num"
+              v-if="calendarDays[(i * 7) + j - 1] !== null"
+              :style="{
+                color: j === 7 ? '#b91c1c' : '#1f2937',
+                fontWeight: '500',
+                fontSize: '1.7vw'
+              }">
             {{ calendarDays[(i * 7) + j - 1] || '' }}
           </div>
         </div>
       </div>
     </div>
+    <AddMeeting
+        v-if="show_meeting"
+        v-model:show_meeting="show_meeting"
+        :date="date"
+    ></AddMeeting>
   </div>
 </template>
 
 <style scoped>
 .num {
-  font-weight: bold;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  border-radius: 50%;
+}
+
+.num:hover {
+  background-color: #10b981;
+  border: 2px solid #059669;
+  cursor: pointer;
 }
 
 .day {
@@ -153,7 +173,7 @@ onBeforeUnmount(() => {
 }
 
 .week:last-of-type {
-  border-bottom: 2px solid black;
+  border-bottom: 3px solid black;
 }
 
 .month {
