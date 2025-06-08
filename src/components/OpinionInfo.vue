@@ -1,5 +1,8 @@
 <script setup>
 import {ref} from "vue";
+import FormInputText from "@/components/FormInputText.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
+import FormButton from "@/components/FormButton.vue";
 
 const name = ref('')
 const message = ref('')
@@ -31,9 +34,21 @@ const submitOpinion = () => {
       <div class="add-opinion-form">
         <h3>Dodaj swoją opinię</h3>
         <form @submit.prevent="submitOpinion">
-          <input v-model="name" type="text" placeholder="Imię" required />
-          <textarea v-model="message" rows="3" placeholder="Twoja opinia" required></textarea>
-          <button type="submit" class="link">Wyślij</button>
+          <FormInputText
+              :placeholder="'Imię'"
+              v-model:input_value="name"
+          ></FormInputText>
+
+          <FormTextArea
+              :placeholder="'Twoja opinia'"
+              v-model:input_value="message"
+          ></FormTextArea>
+
+          <FormButton :reset="false">
+            <template v-slot:green>
+              Wyślij
+            </template>
+          </FormButton>
         </form>
       </div>
     </div>

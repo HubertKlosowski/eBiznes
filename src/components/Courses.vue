@@ -11,7 +11,7 @@ const router = useRouter()
 const route = useRoute()
 const courses = ref(null)
 const render_courses = ref(null)
-const subjects = ref(_.uniq(_.map(courses.value, 'subject')))
+const subjects = ref(null)
 const filters = reactive({
   subject: '',
   price_range: {
@@ -234,6 +234,7 @@ const getCourses = () => {
   }
 ]
   render_courses.value = courses.value
+  subjects.value = _.uniq(_.map(courses.value, 'subject'))
   localStorage.setItem('courses', JSON.stringify(courses.value))
 }
 

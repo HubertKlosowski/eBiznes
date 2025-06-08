@@ -5,6 +5,7 @@ import _ from "lodash";
 import FormInputText from "@/components/FormInputText.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
 import FormButton from "@/components/FormButton.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
 
 const route = useRoute()
 const courseId = route.params.id
@@ -20,6 +21,7 @@ const course = reactive({
 })
 const lessons = ref(null)
 const opinions = ref(null)
+const tests = ref(null)
 const opinion = reactive({
   title: '',
   content: '',
@@ -28,6 +30,11 @@ const opinion = reactive({
 
 // ścieżka do backendu
 const getLessonsByCourse = () => {
+
+}
+
+// ścieżka do backendu
+const getTestsByCourse = () => {
 
 }
 
@@ -82,60 +89,69 @@ onMounted(() => {
         </ol>
       </div>
     </div>
-    <div class="course-lessons" v-if="!_.isEmpty(lessons)">
+    <div class="course-lessons">
       <h3>Lekcje</h3>
-      <div class="lessons">
+      <div class="lessons" v-if="!_.isEmpty(lessons)">
         <div class="lesson" v-for="(lesson, i) in lessons" :key="i"></div>
       </div>
-    </div>
-    <div class="course-lessons" v-else>
-      <h3>Lekcje</h3>
-      <p><b>Na ten moment nauczyciel nie dodał żadnych lekcji do kursu!</b></p>
+      <p v-else><b>Na ten moment nauczyciel nie dodał żadnych lekcji do kursu!</b></p>
     </div>
     <div class="course-tests">
       <h3>Testy</h3>
-      <div class="tests">
-
+      <div class="tests" v-if="!_.isEmpty(tests)">
+        <div class="test" v-for="(test, i) in tests" :key="i"></div>
       </div>
+      <p v-else><b>Na ten moment nauczyciel nie dodał żadnych testów do kursu!</b></p>
     </div>
     <div class="course-opinions">
-      <h3>Opinie</h3>
-      <form @submit.prevent="addOpinion">
-        <FormInputText
-            :label_for="'minimum'"
-            :label="'Tytuł'"
-            :placeholder="'Wpisz tytuł'"
-            v-model:input_value="opinion.title"
-        ></FormInputText>
+      <div class="form">
+        <h3>Opinie</h3>
+        <form @submit.prevent="addOpinion">
+          <FormInputText
+              :label_for="'minimum'"
+              :label="'Tytuł'"
+              :placeholder="'Wpisz tytuł'"
+              v-model:input_value="opinion.title"
+          ></FormInputText>
 
-        <FormInputText
-            :label_for="'minimum'"
-            :label="'Treść opinii'"
-            :placeholder="'Podaj treść opinii'"
-            v-model:input_value="opinion.content"
-        ></FormInputText>
+          <FormTextArea
+              :label_for="'minimum'"
+              :label="'Treść opinii'"
+              :placeholder="'Podaj treść opinii'"
+              v-model:input_value="opinion.content"
+          ></FormTextArea>
 
-        <FormInputSelect
-            :select_values="[1, 2, 3, 4, 5]"
-            v-model:input_value="opinion.score"
-        >
-          <label>Ocena</label>
-        </FormInputSelect>
+          <FormInputSelect
+              :select_values="[1, 2, 3, 4, 5]"
+              v-model:input_value="opinion.score"
+          >
+            <label>Ocena</label>
+          </FormInputSelect>
 
-        <FormButton :reset="true" @redEvent="() => { resetInputs() }">
-          <template v-slot:green>
-            Zatwierdź
-          </template>
-          <template v-slot:red>
-            Wyczyść
-          </template>
-        </FormButton>
-      </form>
+          <FormButton :reset="true" @redEvent="() => { resetInputs() }">
+            <template v-slot:green>
+              Zatwierdź
+            </template>
+            <template v-slot:red>
+              Wyczyść
+            </template>
+          </FormButton>
+        </form>
+      </div>
+      <div class="opinions" v-if="!_.isEmpty(tests)">
+        <div class="opinion" v-for="(opinion, i) in opinions" :key="i"></div>
+      </div>
+      <p v-else><b>Na ten moment kurs nie posiada opinii!</b></p>
     </div>
   </div>
 </template>
 
 <style scoped>
+.form {
+  width: 50%;
+  border-right: 2px solid green;
+}
+
 form {
   width: 80%;
   display: flex;
@@ -145,9 +161,8 @@ form {
 }
 
 .courses-main {
-  max-width: 100%;
+  width: 90%;
   margin: 0 auto;
-  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -173,8 +188,7 @@ form {
   flex-wrap: wrap;
 }
 
-.course-scope,
-.course-info {
+.course-scope, .course-info {
   flex: 1;
   min-width: 280px;
   background-color: #ecfdf5;
@@ -184,9 +198,19 @@ form {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-.course-lessons,
-.course-tests,
 .course-opinions {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.course-lessons, .course-tests {
   width: 100%;
   display: flex;
   flex-direction: column;
