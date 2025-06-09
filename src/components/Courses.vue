@@ -21,6 +21,17 @@ const filters = reactive({
   selected: ''
 })
 
+const resetFilters = () => {
+  Object.assign(filters, {
+    subject: '',
+    price_range: {
+      p_min: null,
+      p_max: null
+    },
+    selected: ''
+  })
+}
+
 const filterCourses = () => {
   render_courses.value = courses.value
   if (filters.subject !== '') {
@@ -293,9 +304,12 @@ onMounted(() => {
             <h4>Sortuj</h4>
           </FormInputSelect>
 
-          <FormButton :reset="false">
+          <FormButton :reset="true" @redEvent="() => { resetFilters() }">
             <template v-slot:green>
               Zastosuj
+            </template>
+            <template v-slot:red>
+              Wyczyść
             </template>
           </FormButton>
         </form>
@@ -353,11 +367,7 @@ onMounted(() => {
   border-radius: 0.5rem;
 }
 
-.submit-btn {
-  margin-bottom: 1rem;
-}
-
-.form-row {
+.form-row:not(:last-child) {
   width: 100%;
   display: flex;
   flex-direction: column;

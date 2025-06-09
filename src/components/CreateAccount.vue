@@ -19,11 +19,13 @@ const createAccount = () => {
 }
 
 const resetInputs = () => {
-  user.name = ''
-  user.email = ''
-  user.username = ''
-  user.type = ''
-  user.password = ''
+  Object.assign(user, {
+    name: '',
+    username: '',
+    email: '',
+    type: '',
+    password: ''
+  })
 }
 </script>
 
@@ -139,16 +141,5 @@ const resetInputs = () => {
   margin-bottom: 2rem;
   text-align: center;
   color: #10b981;
-}
-
-.link-row {
-  margin-top: 1rem;
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.95rem;
-  color: #6b7280;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
 }
 </style>

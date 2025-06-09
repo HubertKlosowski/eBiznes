@@ -4,6 +4,7 @@ import FormInputText from "@/components/FormInputText.vue";
 import CreateAccount from "@/components/CreateAccount.vue";
 import { useRouter } from 'vue-router'
 import FormButton from "@/components/FormButton.vue";
+import Header from "@/components/Header.vue";
 
 const router = useRouter()
 
@@ -27,6 +28,7 @@ const logIn = () => {
 </script>
 
 <template>
+  <Header></Header>
   <div class="login-container" v-if="!change_view">
     <form @submit.prevent="logIn" class="login-form">
       <h2 class="form-title">Zaloguj się</h2>

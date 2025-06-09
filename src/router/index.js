@@ -8,49 +8,33 @@ import Account from "@/components/Account.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
 import Calendar from "@/components/Calendar.vue";
 import Course from "@/components/Course.vue";
-import Student from "@/components/Student.vue";
-import Teacher from "@/components/Teacher.vue";
+import StudentProfile from "@/components/StudentProfile.vue";
+import TeacherProfile from "@/components/TeacherProfile.vue";
 import UpdateAccount from "@/components/UpdateAccount.vue";
 import DeleteAccount from "@/components/DeleteAccount.vue";
+import Teachers from "@/components/Teachers.vue";
+import Teacher from "@/components/Teacher.vue";
 
 const routes = [
   {
-    path: '/', component: MainPage
-  },
-  {
-    path: '/login', component: LogIn
-  },
-  {
     path: '/account', component: Account,
     children: [{
-      path: 'student', component: Student
+      path: 'student', component: StudentProfile
     }, {
-      path: 'teacher', component: Teacher
+      path: 'teacher', component: TeacherProfile
     }]
   },
-  {
-    path: '/forgot_passwd', component: ForgotPassword
-  },
-  {
-    path: '/courses', component: Courses
-  },
-  {
-    path: '/courses/:id',
-    component: Course,
-    props: true
-  },
-  {
-    path: '/contact', component: Contact
-  },
-  {
-    path: '/calendar', component: Calendar
-  },
-  {
-    path: '/update', component: UpdateAccount
-  },
-  {
-    path: '/delete', component: DeleteAccount
-  }
+  { path: '/', component: MainPage },
+  { path: '/login', component: LogIn },
+  { path: '/forgot_passwd', component: ForgotPassword },
+  { path: '/courses', component: Courses },
+  { path: '/courses/:id', component: Course, props: true },
+  { path: '/contact', component: Contact },
+  { path: '/calendar', component: Calendar },
+  { path: '/update', component: UpdateAccount },
+  { path: '/delete', component: DeleteAccount },
+  { path: '/teachers', component: Teachers },
+  { path: '/teachers/:id', component: Teacher, props: true },
 ]
 
 const router = createRouter({

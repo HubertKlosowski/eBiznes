@@ -22,6 +22,11 @@ const links = ref([
     name: 'Kontakt',
     icon: ['fas', 'address-book']
   },
+  {
+    route: '/teachers',
+    name: 'Nauczyciele',
+    icon: ['fas', 'person-chalkboard']
+  }
 ])
 const show_info = ref(-1)
 </script>
