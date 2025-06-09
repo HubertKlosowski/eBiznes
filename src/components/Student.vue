@@ -21,7 +21,7 @@ onMounted(() => {
   <div class="meetings">
     <h2>Twoje spotkania</h2>
     <div class="meetings" v-if="!_.isEmpty(meetings)">
-      <div class="course" v-for="course in courses" :key="course"></div>
+      <div class="course" v-for="course in meetings" :key="course"></div>
     </div>
     <p v-else><b>Na ten moment nie masz żadnego spotkania!</b></p>
   </div>

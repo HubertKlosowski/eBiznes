@@ -11,6 +11,21 @@ const getNumberofBoughtCourses = () => {
 }
 
 // ścieżka do backendu
+const getStudentsForCourse = () => {
+
+}
+
+// ścieżka do backendu
+const deleteStudentFromCourse = () => {
+
+}
+
+// ścieżka do backendu
+const addStudentToCourse = () => {
+
+}
+
+// ścieżka do backendu
 const updateCourse = () => {
 
 }
@@ -47,6 +62,13 @@ onMounted(() => {
       <div class="course" v-for="course in courses" :key="course"></div>
     </div>
     <p v-else><b>Na ten moment nie stworzyłeś/aś żadnego kursu!</b></p>
+  </div>
+  <div class="meetings">
+    <h2>Twoje spotkania</h2>
+    <div class="meetings" v-if="!_.isEmpty(meetings)">
+      <div class="course" v-for="course in meetings" :key="course"></div>
+    </div>
+    <p v-else><b>Na ten moment nie masz żadnego spotkania!</b></p>
   </div>
 </template>
 

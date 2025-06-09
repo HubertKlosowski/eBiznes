@@ -241,7 +241,7 @@ dd {
 }
 
 .course-opinions {
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -253,7 +253,7 @@ dd {
 }
 
 .course-lessons, .course-tests {
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
