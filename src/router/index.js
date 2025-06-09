@@ -8,6 +8,10 @@ import Account from "@/components/Account.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
 import Calendar from "@/components/Calendar.vue";
 import Course from "@/components/Course.vue";
+import Student from "@/components/Student.vue";
+import Teacher from "@/components/Teacher.vue";
+import UpdateAccount from "@/components/UpdateAccount.vue";
+import DeleteAccount from "@/components/DeleteAccount.vue";
 
 const routes = [
   {
@@ -17,7 +21,12 @@ const routes = [
     path: '/login', component: LogIn
   },
   {
-    path: '/account', component: Account
+    path: '/account', component: Account,
+    children: [{
+      path: 'student', component: Student
+    }, {
+      path: 'teacher', component: Teacher
+    }]
   },
   {
     path: '/forgot_passwd', component: ForgotPassword
@@ -35,6 +44,12 @@ const routes = [
   },
   {
     path: '/calendar', component: Calendar
+  },
+  {
+    path: '/update', component: UpdateAccount
+  },
+  {
+    path: '/delete', component: DeleteAccount
   }
 ]
 

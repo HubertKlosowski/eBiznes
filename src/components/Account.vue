@@ -2,13 +2,12 @@
 import {useRouter} from "vue-router";
 import {inject, onMounted, ref} from "vue";
 import Header from "@/components/Header.vue";
-import _ from "lodash";
 
 const router = useRouter()
-const $cookies = inject('$cookies')
 
 const user = ref(JSON.parse(localStorage.getItem('user')))
-const courses = ref([])
+const courses = ref(['xdxdxd'])
+const meetings = ref(['xdxdxd'])
 
 const logoutUser = async () => {
   localStorage.clear()
@@ -17,11 +16,17 @@ const logoutUser = async () => {
 
 // ścieżka do backendu
 const getCoursesForUser = () => {
+  localStorage.setItem('courses', JSON.stringify(courses))
+}
 
+// ścieżka do backendu
+const getMeetingsForUser = () => {
+  localStorage.setItem('meetings', JSON.stringify(meetings))
 }
 
 onMounted(() => {
-
+  getCoursesForUser()
+  getMeetingsForUser()
 })
 </script>
 
@@ -57,13 +62,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="account-user-courses">
-      <h2>Twoje kursy</h2>
-      <div class="courses" v-if="!_.isEmpty(courses)">
-        <div class="course" v-for="course in courses" :key="course"></div>
-      </div>
-      <p v-else><b>Na ten moment nie zapisałeś/aś na żaden kurs!</b></p>
-    </div>
+    <RouterView></RouterView>
     <div class="account-buttons">
       <RouterLink to="/update" class="update">Zmień dane</RouterLink>
       <RouterLink to="/delete" class="delete">Usuń konto</RouterLink>
@@ -131,39 +130,9 @@ onMounted(() => {
   color: #374151;
 }
 
-.account-user-courses {
-  width: 100%;
-  max-width: 1000px;
-  background-color: #ffffff;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
 .account-user-courses h2 {
   color: #111827;
   font-size: 1.5rem;
-}
-
-.courses {
-  width: 100%;
-  max-height: 300px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.course {
-  background-color: #ecfdf5;
-  border-left: 4px solid #10b981;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  color: #065f46;
 }
 
 .account-buttons {

@@ -1,0 +1,93 @@
+<script setup>
+import {reactive} from "vue";
+import FormInputText from "@/components/FormInputText.vue";
+import { useRouter } from "vue-router";
+import FormButton from "@/components/FormButton.vue";
+
+
+const router = useRouter()
+const new_user = reactive({
+  username: '',
+  name: '',
+  email: '',
+  password: ''
+})
+const old_user = reactive(JSON.parse(localStorage.getItem('user')))
+
+// ścieżka do backendu
+const updateAccount = () => {
+  localStorage.setItem('user', JSON.stringify(new_user))
+  router.back()
+}
+
+const resetInputs = () => {
+
+}
+</script>
+
+<template>
+  <div class="update-account">
+    <h2>Zmień dane konta</h2>
+    <form @submit.prevent="updateAccount">
+      <FormInputText
+          :label_for="'username'"
+          :label="'Nazwa użytkownika'"
+          :placeholder="old_user.username"
+          v-model:input_value="new_user.username"
+      ></FormInputText>
+
+      <FormInputText
+          :label_for="'name'"
+          :label="'Imię i nazwisko'"
+          :placeholder="old_user.name"
+          v-model:input_value="new_user.name"
+      ></FormInputText>
+
+      <FormInputText
+          :label_for="'email'"
+          :label="'Adres mail'"
+          :placeholder="old_user.email"
+          v-model:input_value="new_user.email"
+      ></FormInputText>
+
+      <FormInputText
+          :label_for="'password'"
+          :label="'Hasło'"
+          :placeholder="'Wiesz jakie masz hasło 🙂🙂'"
+          :is_passwd="true"
+          v-model:input_value="new_user.password"
+      ></FormInputText>
+
+      <FormButton :reset="true" @redEvent="() => { resetInputs() }">
+        <template v-slot:green>
+          Zmień
+        </template>
+        <template v-slot:red>
+          Resetuj
+        </template>
+      </FormButton>
+    </form>
+    <button @click="router.back()" class="link">Wróć</button>
+  </div>
+</template>
+
+<style scoped>
+.update-account {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 50%;
+  background: #f9fafb;
+}
+
+form {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+}
+</style>

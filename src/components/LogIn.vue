@@ -18,10 +18,11 @@ const logIn = () => {
     name: 'Hubert Kłosowski',
     username: 'YsOtUuRdMeUnMt',
     email: 'example@ex.pl',
-    level: 'szkoła podstawowa'
+    level: 'szkoła podstawowa',
+    type: 'student'
   }
   localStorage.setItem('user', JSON.stringify(usertmp))
-  router.push('/account')
+  router.push('/account/' + usertmp.type)
 }
 </script>
 

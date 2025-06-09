@@ -80,13 +80,28 @@ onMounted(() => {
       </div>
       <div class="course-info">
         <h3>Dane ogólne</h3>
-        <ol type="I">
-          <li>Cena: {{ course.price }} zł</li>
-          <li>Ocena: {{ course.score }}/5</li>
-          <li>Ilość godzin: {{ course.duration }}</li>
-          <li>Poziom materiału: {{ course.level }}</li>
-          <li>Nauczyciel: Hubert</li>
-        </ol>
+        <dl>
+          <div class="info-item">
+            <dt>Cena:</dt>
+            <dd>{{ course.price }} zł</dd>
+          </div>
+          <div class="info-item">
+            <dt>Ocena:</dt>
+            <dd>{{ course.score }}/5</dd>
+          </div>
+          <div class="info-item">
+            <dt>Ilość godzin:</dt>
+            <dd>{{ course.duration }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>Poziom materiału:</dt>
+            <dd>{{ course.level }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>Nauczyciel:</dt>
+            <dd>Hubert</dd>
+          </div>
+        </dl>
       </div>
     </div>
     <div class="course-lessons">
@@ -183,19 +198,46 @@ form {
 .courses-intro {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   gap: 2rem;
   width: 100%;
-  flex-wrap: wrap;
 }
 
-.course-scope, .course-info {
-  flex: 1;
-  min-width: 280px;
-  background-color: #ecfdf5;
-  padding: 1rem;
-  border-radius: 0.75rem;
+.course-info, .course-scope {
+  width: 40%;
+  background-color: #f0fdf4;
+  padding: 1.5rem;
+  border-radius: 1rem;
   border-left: 4px solid #10b981;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.course-info h3 {
+  margin-bottom: 1rem;
+  color: #064e3b;
+  font-size: 1.2rem;
+}
+
+dl {
+  margin: 0;
+  padding: 0;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+dt {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+dd {
+  margin: 0;
+  color: #374151;
 }
 
 .course-opinions {

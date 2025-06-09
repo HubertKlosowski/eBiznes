@@ -1,8 +1,9 @@
 <script setup>
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {ref} from "vue";
 
 const input_value = defineModel('input_value')
-const show_password = defineModel('show_password')
+const show_password = ref(false)
 const props = defineProps(['label_for', 'placeholder', 'label', 'is_passwd'])
 </script>
 
@@ -14,7 +15,7 @@ const props = defineProps(['label_for', 'placeholder', 'label', 'is_passwd'])
       v-model="input_value"
       :id="props.label_for"
       :placeholder="props.placeholder"
-      v-if="props.is_passwd === false || props.is_passwd === undefined"
+      v-if="show_password === true || props.is_passwd === undefined"
     />
     <input
       type="password"
@@ -49,7 +50,7 @@ const props = defineProps(['label_for', 'placeholder', 'label', 'is_passwd'])
 }
 
 input[type="password"] {
-  width: 70%;
+  width: 80%;
 }
 
 .link {
@@ -65,7 +66,7 @@ label {
 }
 
 input {
-  width: 90%;
+  width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
