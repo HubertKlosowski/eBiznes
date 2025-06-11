@@ -2,20 +2,44 @@
 import {onMounted, reactive, ref} from "vue";
 import _ from "lodash";
 import {useRouter} from "vue-router";
+import axios from "axios";
 
 const router = useRouter()
 
 const user = reactive(JSON.parse(localStorage.getItem('user')))
-const courses = ref(JSON.parse(localStorage.getItem('courses')))
-const meetings = ref(JSON.parse(localStorage.getItem('meetings')))
+const courses = ref([])
+const meetings = ref([])
 
 const logoutUser = async () => {
   localStorage.clear()
   await router.push('/')
 }
 
-onMounted(() => {
+// ścieżka do backendu
+const getCoursesForUser = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/courses')
+    courses.value = response.data
+    localStorage.setItem('courses', JSON.stringify(response.data))
+  } catch (e) {
+    console.log(e)
+  }
+}
 
+// ścieżka do backendu
+const getMeetingsForUser = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/meetings')
+    meetings.value = response.data
+    localStorage.setItem('meetings', JSON.stringify(response.data))
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+onMounted(() => {
+  getCoursesForUser()
+  getMeetingsForUser()
 })
 </script>
 

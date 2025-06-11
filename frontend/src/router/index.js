@@ -14,6 +14,8 @@ import UpdateAccount from "@/components/UpdateAccount.vue";
 import DeleteAccount from "@/components/DeleteAccount.vue";
 import Teachers from "@/components/Teachers.vue";
 import Teacher from "@/components/Teacher.vue";
+import CreateCourse from "@/components/CreateCourse.vue";
+import CreateMeeting from "@/components/CreateMeeting.vue";
 
 const routes = [
   {
@@ -35,6 +37,8 @@ const routes = [
   { path: '/delete', component: DeleteAccount },
   { path: '/teachers', component: Teachers },
   { path: '/teachers/:id', component: Teacher, props: true },
+  { path: '/create_course', component: CreateCourse },
+  { path: '/create_meeting', component: CreateMeeting }
 ]
 
 const router = createRouter({

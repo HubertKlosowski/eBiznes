@@ -1,43 +1,6 @@
 <script setup>
-import {inject, onMounted, reactive, ref} from "vue";
 import Header from "@/components/Header.vue";
-import axios from "axios";
 
-const user = reactive(JSON.parse(localStorage.getItem('user')))
-const type = ref()
-const courses = ref([])
-const meetings = ref([])
-
-// ścieżka do backendu
-const getCoursesForUser = async () => {
-  try {
-    const response = await axios.get('http://localhost:5000/' + type.value + 's/' + user['id'] + '/courses')
-    console.log(response.data)
-    localStorage.setItem('courses', JSON.stringify(courses))
-  } catch (e) {
-    console.log(e)
-  }
-}
-
-// ścieżka do backendu
-const getMeetingsForUser = async () => {
-  try {
-    const response = await axios.get('http://localhost:5000/' + type.value + 's/' + user['id'] + '/meetings')
-    localStorage.setItem('meetings', JSON.stringify(meetings))
-  } catch (e) {
-    console.log(e)
-  }
-}
-
-onMounted(() => {
-  if ('specialty' in user) {
-    type.value = 'teacher'
-  } else if ('level' in user) {
-    type.value = 'student'
-  }
-  getCoursesForUser()
-  getMeetingsForUser()
-})
 </script>
 
 <template>

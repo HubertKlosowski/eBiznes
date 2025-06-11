@@ -71,6 +71,14 @@ def get_courses():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/teachers', methods=['GET'])
+def get_teachers():
+    try:
+        teachers = Teacher.query.all()
+        return jsonify([teacher.to_dict() for teacher in teachers]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/students/register', methods=['POST'])
 def register_student():
@@ -161,16 +169,41 @@ def get_courses_for_student(student_id):
         } for course in student.courses
     ]), 200
 
+@app.route('/teachers/<uuid:teacher_id>/courses', methods=['GET'])
+def get_courses_for_teacher(teacher_id):
+    courses = Course.query.filter_by(teacher_id=teacher_id).all()
+    return jsonify([{
+        'course_id': str(c.id),
+        'title': c.title,
+        'subject': c.subject,
+        'level': c.level,
+        'price': c.price,
+        'duration': c.duration
+    } for c in courses]), 200
+
 @app.route('/students/<uuid:student_id>/meetings', methods=['GET'])
 def get_meetings_for_user(student_id):
     meetings = Meeting.query.filter_by(student_id=student_id).all()
 
     return jsonify([{
-        'meeting_id': str(m.meeting_id),
+        'meeting_id': str(m.id),
         'title': m.title,
         'status': m.status,
         'start_date': m.start_date.isoformat(),
         'end_date': m.end_date.isoformat()
+    } for m in meetings]), 200
+
+@app.route('/teachers/<uuid:teacher_id>/meetings', methods=['GET'])
+def get_meetings_for_teacher(teacher_id):
+    meetings = Meeting.query.filter_by(teacher_id=teacher_id).all()
+    return jsonify([{
+        'meeting_id': str(m.id),
+        'title': m.title,
+        'status': m.status,
+        'start_date': m.start_date.isoformat(),
+        'end_date': m.end_date.isoformat(),
+        'student_id': str(m.student_id),
+        'link': m.link
     } for m in meetings]), 200
 
 @app.route('/courses/<uuid:course_id>', methods=['PUT'])

@@ -1,11 +1,11 @@
 <script setup>
-
 import FormInputSelect from "@/components/FormInputSelect.vue";
 import FormButton from "@/components/FormButton.vue";
 import Header from "@/components/Header.vue";
 import _ from "lodash";
 import {onMounted, reactive, ref} from "vue";
 import { useRouter } from 'vue-router';
+import axios from "axios";
 
 
 const router = useRouter()
@@ -39,9 +39,13 @@ const filterCourses = () => {
   }
 }
 
-// ścieżka do backendu
-const getTeachers = () => {
-  teachers.value = []
+const getTeachers = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/teachers')
+    teachers.value = response.data
+  } catch (e) {
+    console.error('Błąd podczas pobierania nauczycieli: ', e)
+  }
   render_teachers.value = teachers.value
   specialties.value = _.uniq(_.map(teachers.value, 'specialty'))
   localStorage.setItem('teachers', JSON.stringify(teachers.value))

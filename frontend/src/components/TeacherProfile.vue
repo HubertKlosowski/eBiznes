@@ -2,12 +2,23 @@
 import {onMounted, reactive, ref} from "vue";
 import _ from "lodash";
 import {useRouter} from "vue-router";
+import axios from "axios";
 
 const router = useRouter()
 
 const user = reactive(JSON.parse(localStorage.getItem('user')))
-const courses = ref(JSON.parse(localStorage.getItem('courses')))
-const meetings = ref(JSON.parse(localStorage.getItem('meetings')))
+const courses = ref([])
+const meetings = ref([])
+const num_bought_courses = ref()
+const course = reactive({
+  description: '',
+  duration: 0,
+  level: '',
+  price: '',
+  subject: '',
+  teacher_id: '',
+  title: ''
+})
 
 const logoutUser = async () => {
   localStorage.clear()
@@ -15,52 +26,142 @@ const logoutUser = async () => {
 }
 
 // ścieżka do backendu
-const getNumberofBoughtCourses = () => {
-
+const getNumberofBoughtCourses = async (teacherId) => {
+  try {
+    const res = await axios.get(`http://localhost:5000/teachers/${teacherId}/courses/count`)
+    return res.data.count
+  } catch (e) {
+    console.error('Błąd przy pobieraniu liczby kursów:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const getStudentsForCourse = () => {
-
+const getStudentsForCourse = async (courseId) => {
+  try {
+    const res = await axios.get(`http://localhost:5000/courses/${courseId}/students`)
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy pobieraniu studentów kursu:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const deleteStudentFromCourse = () => {
-
+const deleteStudentFromCourse = async (courseId, studentId) => {
+  try {
+    const res = await axios.delete(`http://localhost:5000/courses/${courseId}/students/${studentId}`)
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy usuwaniu studenta z kursu:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const addStudentToCourse = () => {
-
+const addStudentToCourse = async (courseId, studentId) => {
+  try {
+    const res = await axios.post(`http://localhost:5000/courses/${courseId}/students/${studentId}`)
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy dodawaniu studenta do kursu:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const updateCourse = () => {
+const updateCourse = async (courseId, courseData) => {
+  try {
+    const res = await axios.put(`http://localhost:5000/courses/${courseId}`, courseData)
 
+    const courseIndex = _.findIndex(courses.value, { id: courseId })
+    if (courseIndex !== -1) {
+      courses.value[courseIndex] = { ...courses.value[courseIndex], ...courseData }
+    }
+
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy aktualizacji kursu:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const createCourse = () => {
+const createCourse = async (courseData) => {
+  try {
+    const res = await axios.post(`http://localhost:5000/courses`, courseData)
 
+    if (res.data.course_id) {
+      courses.value.push({ id: res.data.course_id, ...courseData })
+    }
+
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy tworzeniu kursu:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const deleteCourse = () => {
-
+const deleteCourse = async (courseId) => {
+  try {
+    const res = await axios.delete(`http://localhost:5000/courses/${courseId}`)
+    courses.value = _.remove(courses.value, { id: courseId })
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy usuwaniu kursu:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const updateMeeting = () => {
-
+const updateMeeting = async (meetingId, meetingData) => {
+  try {
+    const res = await axios.put(`http://localhost:5000/meetings/${meetingId}`, meetingData)
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy aktualizacji spotkania:', e)
+    throw e
+  }
 }
 
 // ścieżka do backendu
-const deleteMeeting = () => {
+const deleteMeeting = async (meetingId) => {
+  try {
+    const res = await axios.delete(`http://localhost:5000/meetings/${meetingId}`)
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy usuwaniu spotkania:', e)
+    throw e
+  }
+}
 
+// ścieżka do backendu
+const getCoursesForUser = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/teachers/' + user['id'] + '/courses')
+    courses.value = response.data
+    localStorage.setItem('courses', JSON.stringify(response.data))
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+// ścieżka do backendu
+const getMeetingsForUser = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/teachers/' + user['id'] + '/meetings')
+    meetings.value = response.data
+    localStorage.setItem('meetings', JSON.stringify(response.data))
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 onMounted(() => {
-  getNumberofBoughtCourses()
+  getCoursesForUser()
+  getMeetingsForUser()
+  num_bought_courses.value = getNumberofBoughtCourses(user.id)
 })
 </script>
 
@@ -101,9 +202,27 @@ onMounted(() => {
   <div class="account-user-courses">
     <h2>Utworzone kursy</h2>
     <div class="courses" v-if="!_.isEmpty(courses)">
-      <div class="course" v-for="course in courses" :key="course"></div>
+      <div class="course" v-for="(courseItem, i) in courses" :key="courseItem.id || i">
+        <div class="course-header">
+          <h4 class="course-title">{{ courseItem.title }}</h4>
+          <div class="course-actions">
+            <button @click="updateCourse(courseItem)" class="submit-btn">Edytuj</button>
+            <button @click="deleteCourse(courseItem.course_id)" class="reset-btn">Usuń</button>
+          </div>
+        </div>
+        <p class="course-subject"><strong>Przedmiot:</strong> {{ courseItem.subject }}</p>
+        <p class="course-description" v-if="courseItem.description"><strong>Opis:</strong> {{ courseItem.description }}</p>
+        <p class="course-description" v-else>Brak opisu kursu!</p>
+        <div class="course-details">
+          <p class="course-level"><strong>Poziom:</strong> {{ courseItem.level }}</p>
+          <p class="course-duration"><strong>Czas:</strong> {{ courseItem.duration }}h</p>
+          <p class="course-price"><strong>Cena:</strong> {{ courseItem.price }} zł</p>
+          <p class="course-score"><strong>Ocena: </strong> {{ courseItem.score }}/5</p>
+        </div>
+      </div>
     </div>
     <p v-else><b>Na ten moment nie stworzyłeś/aś żadnego kursu!</b></p>
+    <RouterLink to="/create_course" class="link">Dodaj kurs</RouterLink>
   </div>
   <div class="meetings">
     <h2>Twoje spotkania</h2>
@@ -111,10 +230,40 @@ onMounted(() => {
       <div class="course" v-for="course in meetings" :key="course"></div>
     </div>
     <p v-else><b>Na ten moment nie masz żadnego spotkania!</b></p>
+    <RouterLink to="/create_meeting" class="link">Dodaj spotkanie</RouterLink>
   </div>
 </template>
 
 <style scoped>
+.course-description {
+  color: #6b7280;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.course-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.course-details span {
+  padding: 0.25rem 0.5rem;
+  background-color: #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.course-actions {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .account-first-section {
   width: 100%;
   max-width: 1000px;
@@ -163,12 +312,12 @@ onMounted(() => {
   color: #374151;
 }
 
-.account-user-courses h2 {
+.account-user-courses h2, .meetings h2 {
   color: #111827;
   font-size: 1.5rem;
 }
 
-.account-user-courses {
+.account-user-courses, .meetings {
   width: 90%;
   background-color: #ffffff;
   padding: 2rem;
@@ -178,11 +327,6 @@ onMounted(() => {
   flex-direction: column;
   gap: 1rem;
   align-items: flex-start;
-}
-
-.account-user-courses h2 {
-  color: #111827;
-  font-size: 1.5rem;
 }
 
 .courses {
