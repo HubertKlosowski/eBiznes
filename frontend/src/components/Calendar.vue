@@ -1,7 +1,7 @@
 <script setup>
 
 import Header from "@/components/Header.vue";
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, reactive, ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import AddMeeting from "@/components/AddMeeting.vue";
 
@@ -16,6 +16,7 @@ const month_names = ref([
   "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
 ])
 let timer = null
+const user = reactive(JSON.parse(localStorage.getItem('user')))
 
 const changeDate = (param) => {
   const current = today.value
@@ -79,6 +80,8 @@ watch(today, () => {
 onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
 })
+
+console.log(user)
 </script>
 
 <template>

@@ -6,19 +6,12 @@ import FormInputText from "@/components/FormInputText.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
 import FormButton from "@/components/FormButton.vue";
 import FormTextArea from "@/components/FormTextArea.vue";
+import axios from "axios";
 
 const route = useRoute()
 const courseId = route.params.id
 
-const course = reactive({
-  subject: '',
-  title: '',
-  desc: '',
-  level: '',
-  duration: 0,
-  price: 0,
-  score: 0
-})
+const course = reactive(JSON.parse(localStorage.getItem('courses'))[courseId])
 const lessons = ref(null)
 const opinions = ref(null)
 const tests = ref(null)
@@ -28,24 +21,41 @@ const opinion = reactive({
   score: 0
 })
 
-// ścieżka do backendu
-const getLessonsByCourse = () => {
-
+const getOpinions = async () => {
+  try {
+    const res = await axios.get(`http://localhost:5000/courses/${course.id}/opinions`)
+    opinions.value = res.data
+  } catch (e) {
+    console.error('Błąd przy pobieraniu opinii:', e)
+  }
 }
 
-// ścieżka do backendu
-const getTestsByCourse = () => {
-
+const addOpinion = async () => {
+  try {
+    const res = await axios.post(`http://localhost:5000/courses/${course.id}/opinions`, opinion)
+    opinions.value.push({ ...opinion })
+    resetInputs()
+  } catch (e) {
+    console.error('Błąd przy dodawaniu opinii:', e)
+  }
 }
 
-// ścieżka do backendu
-const addOpinion = () => {
-
+const getLessonsByCourse = async () => {
+  try {
+    const res = await axios.get(`http://localhost:5000/courses/${course.id}/lessons`)
+    lessons.value = res.data
+  } catch (e) {
+    console.error('Błąd przy pobieraniu lekcji:', e)
+  }
 }
 
-// ścieżka do backendu
-const getOpinions = () => {
-
+const getTestsByCourse = async () => {
+  try {
+    const res = await axios.get(`http://localhost:5000/courses/${course.id}/tests`)
+    tests.value = res.data
+  } catch (e) {
+    console.error('Błąd przy pobieraniu testów:', e)
+  }
 }
 
 const resetInputs = () => {
@@ -57,6 +67,9 @@ const resetInputs = () => {
 }
 
 onMounted(() => {
+  getOpinions()
+  getTestsByCourse()
+  getLessonsByCourse()
   Object.assign(course, JSON.parse(localStorage.getItem('courses'))[courseId])
 })
 </script>
@@ -75,7 +88,7 @@ onMounted(() => {
       <div class="course-scope">
         <h3>Zakres kursu</h3>
         <div class="content">
-          <span v-for="(sentence, i) in course.desc.split('.')" :key="i">{{ sentence }}</span>
+          <span v-for="(sentence, i) in course.description.split('.')" :key="i">{{ sentence }}</span>
         </div>
       </div>
       <div class="course-info">
@@ -153,8 +166,12 @@ onMounted(() => {
           </FormButton>
         </form>
       </div>
-      <div class="opinions" v-if="!_.isEmpty(tests)">
-        <div class="opinion" v-for="(opinion, i) in opinions" :key="i"></div>
+      <div class="opinions" v-if="!_.isEmpty(opinions)">
+        <div class="opinion" v-for="(op, i) in opinions" :key="i">
+          <h4 class="opinion-title">{{ op.title }}</h4>
+          <p class="opinion-content">{{ op.content }}</p>
+          <p class="opinion-score">Ocena: {{ op.score }}/5</p>
+        </div>
       </div>
       <p v-else><b>Na ten moment kurs nie posiada opinii!</b></p>
     </div>
@@ -162,6 +179,43 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.opinions {
+  height: 100%;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.opinion {
+  width: 80%;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  background-color: #f9fafb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.opinion-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.opinion-content {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.opinion-score {
+  font-weight: 500;
+  color: #2563eb;
+}
+
 .form {
   width: 50%;
   border-right: 2px solid green;
@@ -177,11 +231,11 @@ form {
 
 .courses-main {
   width: 90%;
+  height: 100vh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 2rem;
   background-color: #f9fafb;
   border-radius: 1rem;
@@ -242,6 +296,7 @@ dd {
 
 .course-opinions {
   width: 90%;
+  height: 80vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

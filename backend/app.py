@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from models import db, Meeting, Lesson, Test, Opinion, Student, Course, Teacher
 from config import Config
 from datetime import datetime
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 
@@ -35,19 +35,12 @@ def add_meeting():
 @app.route('/courses/<uuid:course_id>/lessons', methods=['GET'])
 def get_lessons_by_course(course_id):
     lessons = Lesson.query.filter_by(course_id=course_id).all()
-    return jsonify([{
-        'lesson_id': str(l.lesson_id),
-        'content': l.content
-    } for l in lessons]), 200
+    return jsonify([l.to_dict() for l in lessons]), 200
 
 @app.route('/courses/<uuid:course_id>/tests', methods=['GET'])
 def get_tests_by_course(course_id):
     tests = Test.query.filter_by(course_id=course_id).all()
-    return jsonify([{
-        'test_id': str(t.test_id),
-        'content': t.content,
-        'grade': t.grade
-    } for t in tests]), 200
+    return jsonify([t.to_dict() for t in tests]), 200
 
 @app.route('/courses/<uuid:course_id>/opinions', methods=['POST'])
 def add_opinion(course_id):
@@ -68,12 +61,16 @@ def add_opinion(course_id):
 @app.route('/courses/<uuid:course_id>/opinions', methods=['GET'])
 def get_opinions_by_course(course_id):
     opinions = Opinion.query.filter_by(course_id=course_id).all()
-    return jsonify([{
-        'opinion_id': str(op.opinion_id),
-        'title': op.title,
-        'content': op.content,
-        'score': op.score
-    } for op in opinions]), 200
+    return jsonify([op.to_dict() for op in opinions]), 200
+
+@app.route('/courses', methods=['GET'])
+def get_courses():
+    try:
+        courses = Course.query.all()
+        return jsonify([course.to_dict() for course in courses]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/students/register', methods=['POST'])
 def register_student():
@@ -150,18 +147,24 @@ def forgot_teacher_password():
     return jsonify({'message': 'Password updated successfully'})
 
 @app.route('/students/<uuid:student_id>/courses', methods=['GET'])
-def get_courses_for_user(student_id):
-    courses = Course.query.join(Meeting).filter(Meeting.student_id == student_id).all()
-    return jsonify([{
-        'course_id': str(c.course_id),
-        'title': c.title,
-        'level': c.level,
-        'price': c.price
-    } for c in courses]), 200
+def get_courses_for_student(student_id):
+    student = Student.query.filter_by(id=student_id).first()
+    if not student:
+        return jsonify({'error': 'Student not found'}), 404
+
+    return jsonify([
+        {
+            'course_id': str(course.id),
+            'title': course.title,
+            'level': course.level,
+            'price': course.price
+        } for course in student.courses
+    ]), 200
 
 @app.route('/students/<uuid:student_id>/meetings', methods=['GET'])
 def get_meetings_for_user(student_id):
     meetings = Meeting.query.filter_by(student_id=student_id).all()
+
     return jsonify([{
         'meeting_id': str(m.meeting_id),
         'title': m.title,
