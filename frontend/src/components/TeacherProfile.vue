@@ -74,7 +74,7 @@ const updateCourse = async (courseId, courseData) => {
   try {
     const res = await axios.put(`http://localhost:5000/courses/${courseId}`, courseData)
 
-    const courseIndex = _.findIndex(courses.value, { id: courseId })
+    const courseIndex = _.findIndex(courses.value, { course_id: courseId })
     if (courseIndex !== -1) {
       courses.value[courseIndex] = { ...courses.value[courseIndex], ...courseData }
     }
@@ -92,7 +92,7 @@ const createCourse = async (courseData) => {
     const res = await axios.post(`http://localhost:5000/courses`, courseData)
 
     if (res.data.course_id) {
-      courses.value.push({ id: res.data.course_id, ...courseData })
+      courses.value.push({ course_id: res.data.course_id, ...courseData })
     }
 
     return res.data
@@ -106,8 +106,7 @@ const createCourse = async (courseData) => {
 const deleteCourse = async (courseId) => {
   try {
     const res = await axios.delete(`http://localhost:5000/courses/${courseId}`)
-    courses.value = _.remove(courses.value, { id: courseId })
-    return res.data
+    _.remove(courses.value, { course_id: courseId })
   } catch (e) {
     console.error('Błąd przy usuwaniu kursu:', e)
     throw e
@@ -141,7 +140,6 @@ const getCoursesForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/teachers/' + user['id'] + '/courses')
     courses.value = response.data
-    localStorage.setItem('courses', JSON.stringify(response.data))
   } catch (e) {
     console.log(e)
   }
@@ -152,16 +150,16 @@ const getMeetingsForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/teachers/' + user['id'] + '/meetings')
     meetings.value = response.data
-    localStorage.setItem('meetings', JSON.stringify(response.data))
   } catch (e) {
     console.log(e)
   }
 }
 
-onMounted(() => {
-  getCoursesForUser()
-  getMeetingsForUser()
-  num_bought_courses.value = getNumberofBoughtCourses(user.id)
+onMounted(async () => {
+  await getCoursesForUser()
+  await getMeetingsForUser()
+  num_bought_courses.value = await getNumberofBoughtCourses(user.id)
+  console.log(courses.value)
 })
 </script>
 
@@ -202,12 +200,12 @@ onMounted(() => {
   <div class="account-user-courses">
     <h2>Utworzone kursy</h2>
     <div class="courses" v-if="!_.isEmpty(courses)">
-      <div class="course" v-for="(courseItem, i) in courses" :key="courseItem.id || i">
+      <div class="course" v-for="(courseItem, i) in courses" :key="i">
         <div class="course-header">
           <h4 class="course-title">{{ courseItem.title }}</h4>
           <div class="course-actions">
-            <button @click="updateCourse(courseItem)" class="submit-btn">Edytuj</button>
-            <button @click="deleteCourse(courseItem.course_id)" class="reset-btn">Usuń</button>
+            <button @click.prevent="updateCourse(courseItem)" class="submit-btn">Edytuj</button>
+            <button @click.prevent="deleteCourse(courseItem.course_id)" class="reset-btn">Usuń</button>
           </div>
         </div>
         <p class="course-subject"><strong>Przedmiot:</strong> {{ courseItem.subject }}</p>

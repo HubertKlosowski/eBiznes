@@ -160,51 +160,23 @@ def get_courses_for_student(student_id):
     if not student:
         return jsonify({'error': 'Student not found'}), 404
 
-    return jsonify([
-        {
-            'course_id': str(course.id),
-            'title': course.title,
-            'level': course.level,
-            'price': course.price
-        } for course in student.courses
-    ]), 200
+    return jsonify([course.to_dict() for course in student.courses]), 200
 
 @app.route('/teachers/<uuid:teacher_id>/courses', methods=['GET'])
 def get_courses_for_teacher(teacher_id):
     courses = Course.query.filter_by(teacher_id=teacher_id).all()
-    return jsonify([{
-        'course_id': str(c.id),
-        'title': c.title,
-        'subject': c.subject,
-        'level': c.level,
-        'price': c.price,
-        'duration': c.duration
-    } for c in courses]), 200
+    return jsonify([course.to_dict() for course in courses]), 200
 
 @app.route('/students/<uuid:student_id>/meetings', methods=['GET'])
 def get_meetings_for_user(student_id):
     meetings = Meeting.query.filter_by(student_id=student_id).all()
 
-    return jsonify([{
-        'meeting_id': str(m.id),
-        'title': m.title,
-        'status': m.status,
-        'start_date': m.start_date.isoformat(),
-        'end_date': m.end_date.isoformat()
-    } for m in meetings]), 200
+    return jsonify([m.to_dict() for m in meetings]), 200
 
 @app.route('/teachers/<uuid:teacher_id>/meetings', methods=['GET'])
 def get_meetings_for_teacher(teacher_id):
     meetings = Meeting.query.filter_by(teacher_id=teacher_id).all()
-    return jsonify([{
-        'meeting_id': str(m.id),
-        'title': m.title,
-        'status': m.status,
-        'start_date': m.start_date.isoformat(),
-        'end_date': m.end_date.isoformat(),
-        'student_id': str(m.student_id),
-        'link': m.link
-    } for m in meetings]), 200
+    return jsonify([m.to_dict() for m in meetings]), 200
 
 @app.route('/courses/<uuid:course_id>', methods=['PUT'])
 def update_course(course_id):

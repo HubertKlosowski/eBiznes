@@ -19,7 +19,6 @@ const logoutUser = async () => {
 const getCoursesForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/courses')
-    courses.value = response.data
     localStorage.setItem('courses', JSON.stringify(response.data))
   } catch (e) {
     console.log(e)
@@ -30,7 +29,6 @@ const getCoursesForUser = async () => {
 const getMeetingsForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/meetings')
-    meetings.value = response.data
     localStorage.setItem('meetings', JSON.stringify(response.data))
   } catch (e) {
     console.log(e)
@@ -40,6 +38,8 @@ const getMeetingsForUser = async () => {
 onMounted(() => {
   getCoursesForUser()
   getMeetingsForUser()
+  courses.value = JSON.parse(localStorage.getItem('courses'))
+  meetings.value = JSON.parse(localStorage.getItem('meetings'))
 })
 </script>
 
