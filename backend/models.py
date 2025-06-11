@@ -48,8 +48,8 @@ class Student(db.Model):
     avatar = db.Column(db.LargeBinary)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-    level = db.Column(db.Enum('basic', 'advanced', name='student_level'))
+    password = db.Column(db.String(256), nullable=False)
+    level = db.Column(db.Enum('podstawowka', 'liceum', 'technikum', 'studia', name='student_level'))
 
     def set_password(self, raw_password):
         self.password = generate_password_hash(raw_password)
@@ -65,9 +65,9 @@ class Teacher(db.Model):
     name = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-    specialty = db.Column(db.Enum('math', 'physics', 'english', 'other', name='teacher_specialty'))
-    desc = db.Column(db.Text)
+    password = db.Column(db.String(256), nullable=False)
+    specialty = db.Column(db.Enum('matematyka', 'fizyka', 'biologia', 'chemia', name='teacher_specialty'))
+    description = db.Column(db.Text)
     experience = db.Column(db.Integer)
 
     def set_password(self, raw_password):

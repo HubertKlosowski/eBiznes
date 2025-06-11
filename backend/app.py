@@ -8,6 +8,7 @@ import uuid
 
 app = Flask(__name__)
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config.from_object(Config)
 db.init_app(app)
 
@@ -17,7 +18,7 @@ def add_meeting():
     try:
         new_meeting = Meeting(
             title=data['title'],
-            desc=data.get('desc'),
+            description=data.get('description'),
             status=data['status'],
             link=data.get('link'),
             start_date=datetime.strptime(data['start_date'], '%Y-%m-%d %H:%M:%S'),
@@ -121,7 +122,7 @@ def register_teacher():
         username=data['username'],
         email=data['email'],
         specialty=data.get('specialty', 'other'),
-        desc=data.get('desc', ''),
+        description=data.get('description', ''),
         experience=data.get('experience', 0)
     )
     new_teacher.password = generate_password_hash(data['password'])
@@ -176,7 +177,7 @@ def update_course(course_id):
         return jsonify({'error': 'Course not found'}), 404
 
     data = request.get_json()
-    for field in ['title', 'subject', 'desc', 'level', 'duration', 'price', 'score']:
+    for field in ['title', 'subject', 'description', 'level', 'duration', 'price', 'score']:
         if field in data:
             setattr(course, field, data[field])
 
@@ -189,7 +190,7 @@ def create_course():
     new_course = Course(
         title=data['title'],
         subject=data.get('subject', ''),
-        desc=data.get('desc', ''),
+        description=data.get('description', ''),
         level=data.get('level', 'basic'),
         duration=data.get('duration', 0),
         price=data.get('price', 0),
@@ -217,7 +218,7 @@ def update_meeting(meeting_id):
         return jsonify({'error': 'Meeting not found'}), 404
 
     data = request.get_json()
-    for field in ['title', 'desc', 'status', 'link', 'start_date', 'end_date']:
+    for field in ['title', 'description', 'status', 'link', 'start_date', 'end_date']:
         if field in data:
             setattr(meeting, field, data[field])
 

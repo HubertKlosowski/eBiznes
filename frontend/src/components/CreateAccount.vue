@@ -1,21 +1,36 @@
 <script setup>
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import FormInputText from "@/components/FormInputText.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
 import FormButton from "@/components/FormButton.vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const user = reactive({
   name: '',
   username: '',
   email: '',
   type: '',
+  specialty: '',
+  level: '',
+  experience: 0,
   password: ''
 })
 const router = useRouter()
+const student_levels = ref(['podstawówka', 'liceum', 'technikum', 'studia'])
+const teacher_levels = ref(['matematyka', 'fizyka', 'biologia', 'chemia'])
 
-const createAccount = () => {
+const createAccount = async () => {
+  try {
+    const response = user.specialty === '' ?
+        await axios.post('http://localhost:5000/students/register', user) :
+        await axios.post('http://localhost:5000/teachers/register', user)
 
+    console.log(response)
+    resetInputs()
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 const resetInputs = () => {
@@ -24,6 +39,9 @@ const resetInputs = () => {
     username: '',
     email: '',
     type: '',
+    specialty: '',
+    level: '',
+    experience: 0,
     password: ''
   })
 }
@@ -45,7 +63,7 @@ const resetInputs = () => {
           :label_for="'name'"
           :label="'Imię i nazwisko'"
           :placeholder="'Wpisz imię i nazwisko'"
-          v-model:input_value="user.username"
+          v-model:input_value="user.name"
       ></FormInputText>
 
       <FormInputText
@@ -56,11 +74,35 @@ const resetInputs = () => {
       ></FormInputText>
 
       <FormInputSelect
-          :select_values="['Uczeń/Student', 'Nauczyciel', 'Administrator']"
+          :select_values="['Uczeń/Student', 'Nauczyciel']"
           v-model:input_value="user.type"
       >
         <label>Typ użytkownika</label>
       </FormInputSelect>
+
+      <FormInputSelect
+          v-if="user.type === 'Uczeń/Student'"
+          :select_values="student_levels"
+          v-model:input_value="user.level"
+      >
+        <label>Poziom nauczania</label>
+      </FormInputSelect>
+
+      <FormInputSelect
+          v-if="user.type === 'Nauczyciel'"
+          :select_values="teacher_levels"
+          v-model:input_value="user.specialty"
+      >
+        <label>Specjalność</label>
+      </FormInputSelect>
+
+      <FormInputText
+          v-if="user.type === 'Nauczyciel'"
+          :label_for="'experience'"
+          :label="'Długość stażu'"
+          :placeholder="'Wpisz długość stażu'"
+          v-model:input_value="user.experience"
+      ></FormInputText>
 
       <FormInputText
           :label_for="'password'"

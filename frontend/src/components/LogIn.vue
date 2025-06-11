@@ -72,6 +72,17 @@ const logIn = () => {
 </template>
 
 <style scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.link-row > .link {
+  width: 100%;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
@@ -99,6 +110,7 @@ const logIn = () => {
 }
 
 .link-row {
+  width: 100%;
   margin-top: 1rem;
   padding: 1rem;
   text-align: center;

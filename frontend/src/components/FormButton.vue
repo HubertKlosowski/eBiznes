@@ -8,10 +8,14 @@ const emits = defineEmits(['redEvent'])
   <div class="form-row">
     <button class="submit-btn" :style="{
       width: props.reset ? '40%' : '100%'
-    }">
+    }" type="submit">
       <slot name="green"></slot>
     </button>
-    <button class="reset-btn" @click="emits('redEvent')" v-if="props.reset">
+    <button
+        class="reset-btn"
+        @click="emits('redEvent')"
+        v-if="props.reset"
+        type="button">
       <slot name="red"></slot>
     </button>
   </div>
