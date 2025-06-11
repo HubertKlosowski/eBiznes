@@ -28,7 +28,7 @@ def add_meeting():
         )
         db.session.add(new_meeting)
         db.session.commit()
-        return jsonify({'message': 'Meeting added', 'meeting_id': str(new_meeting.meeting_id)}), 201
+        return jsonify({'message': 'Meeting added', 'meeting': new_meeting.to_dict()}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
@@ -61,7 +61,7 @@ def add_opinion(course_id):
         )
         db.session.add(new_opinion)
         db.session.commit()
-        return jsonify({'message': 'Opinion added', 'opinion_id': str(new_opinion.opinion_id)}), 201
+        return jsonify({'message': 'Opinion added', 'opinion': new_opinion.to_dict()}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
@@ -90,14 +90,14 @@ def register_student():
     new_student.set_password(data['password'])
     db.session.add(new_student)
     db.session.commit()
-    return jsonify({'message': 'Student registered', 'student_id': str(new_student.student_id)}), 201
+    return jsonify({'message': 'Student registered', 'student': new_student.to_dict()}), 201
 
 @app.route('/students/login', methods=['POST'])
 def login_student():
     data = request.get_json()
-    student = Student.query.filter_by(email=data['email']).first()
+    student = Student.query.filter_by(username=data['username']).first()
     if student and student.check_password(data['password']):
-        return jsonify({'message': 'Login successful', 'student_id': str(student.student_id)})
+        return jsonify({'message': 'Login successful', 'student': student.to_dict()})
     return jsonify({'error': 'Invalid credentials'}), 401
 
 @app.route('/students/forgot', methods=['POST'])
@@ -128,14 +128,14 @@ def register_teacher():
     new_teacher.password = generate_password_hash(data['password'])
     db.session.add(new_teacher)
     db.session.commit()
-    return jsonify({'message': 'Teacher registered', 'teacher_id': str(new_teacher.teacher_id)}), 201
+    return jsonify({'message': 'Teacher registered', 'teacher_id': new_teacher.to_dict()}), 201
 
 @app.route('/teachers/login', methods=['POST'])
 def login_teacher():
     data = request.get_json()
-    teacher = Teacher.query.filter_by(email=data['email']).first()
+    teacher = Teacher.query.filter_by(username=data['username']).first()
     if teacher and check_password_hash(teacher.password, data['password']):
-        return jsonify({'message': 'Login successful', 'teacher_id': str(teacher.teacher_id)})
+        return jsonify({'message': 'Login successful', 'teacher': teacher.to_dict()})
     return jsonify({'error': 'Invalid credentials'}), 401
 
 @app.route('/teachers/forgot', methods=['POST'])
@@ -199,7 +199,7 @@ def create_course():
     )
     db.session.add(new_course)
     db.session.commit()
-    return jsonify({'message': 'Course created', 'course_id': str(new_course.course_id)})
+    return jsonify({'message': 'Course created', 'course_id': new_course.to_dict()})
 
 @app.route('/courses/<uuid:course_id>', methods=['DELETE'])
 def delete_course(course_id):

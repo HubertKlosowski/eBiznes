@@ -5,25 +5,41 @@ import CreateAccount from "@/components/CreateAccount.vue";
 import { useRouter } from 'vue-router'
 import FormButton from "@/components/FormButton.vue";
 import Header from "@/components/Header.vue";
+import axios from "axios";
+import FormInputSelect from "@/components/FormInputSelect.vue";
 
 const router = useRouter()
 
 const user = reactive({
   username: '',
-  password: ''
+  password: '',
+  type: ''
 })
 const change_view = ref(false)
 
-const logIn = () => {
-  const usertmp = {
-    name: 'Hubert Kłosowski',
-    username: 'YsOtUuRdMeUnMt',
-    email: 'example@ex.pl',
-    level: 'szkoła podstawowa',
-    type: 'student'
+const logIn = async () => {
+  try {
+    const response = user.type === 'Nauczyciel' ?
+        await axios.post('http://localhost:5000/teachers/login', user) :
+        await axios.post('http://localhost:5000/students/login', user)
+
+    const data = response.data
+    const login_user = data.student || data.teacher
+
+    localStorage.setItem('user', JSON.stringify(login_user))
+    router.push(user.type === 'Nauczyciel' ? '/account/teacher' : '/account/student')
+    resetInputs()
+  } catch (e) {
+    console.log(e)
   }
-  localStorage.setItem('user', JSON.stringify(usertmp))
-  router.push('/account/' + usertmp.type)
+}
+
+const resetInputs = () => {
+  Object.assign(user, {
+    username: '',
+    password: '',
+    type: ''
+  })
 }
 </script>
 
@@ -39,6 +55,13 @@ const logIn = () => {
           :placeholder="'Wpisz login'"
           v-model:input_value="user.username"
       ></FormInputText>
+
+      <FormInputSelect
+          :select_values="['Uczeń/Student', 'Nauczyciel']"
+          v-model:input_value="user.type"
+      >
+        <label>Typ użytkownika</label>
+      </FormInputSelect>
 
       <FormInputText
           :label_for="'password'"
