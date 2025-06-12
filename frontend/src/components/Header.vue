@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const links = ref([
   {
@@ -29,6 +29,17 @@ const links = ref([
   }
 ])
 const show_info = ref(-1)
+
+onMounted(() => {
+  if (localStorage.hasOwnProperty('user')) {
+    const user = JSON.parse(localStorage.getItem('user'))
+    links.value[0] = {
+      route: user.level !== undefined ? '/account/student' : '/account/teacher',
+      name: 'Konto',
+      icon: ['fas', 'user']
+    }
+  }
+})
 </script>
 
 <template>

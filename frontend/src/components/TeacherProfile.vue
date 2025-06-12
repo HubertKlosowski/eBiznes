@@ -3,6 +3,8 @@ import {onMounted, reactive, ref} from "vue";
 import _ from "lodash";
 import {useRouter} from "vue-router";
 import axios from "axios";
+import AddCourse from "@/components/AddCourse.vue";
+import UpdateCourse from "@/components/UpdateCourse.vue";
 
 const router = useRouter()
 
@@ -10,15 +12,17 @@ const user = reactive(JSON.parse(localStorage.getItem('user')))
 const courses = ref([])
 const meetings = ref([])
 const num_bought_courses = ref()
-const course = reactive({
+const show_course = ref(false)
+const update_course = reactive({
   description: '',
   duration: 0,
   level: '',
   price: '',
-  subject: '',
-  teacher_id: '',
+  subject: user.specialty,
+  teacher_id: user.id,
   title: ''
 })
+const show_update_course = ref(false)
 
 const logoutUser = async () => {
   localStorage.clear()
@@ -70,36 +74,9 @@ const addStudentToCourse = async (courseId, studentId) => {
 }
 
 // ścieżka do backendu
-const updateCourse = async (courseId, courseData) => {
-  try {
-    const res = await axios.put(`http://localhost:5000/courses/${courseId}`, courseData)
-
-    const courseIndex = _.findIndex(courses.value, { course_id: courseId })
-    if (courseIndex !== -1) {
-      courses.value[courseIndex] = { ...courses.value[courseIndex], ...courseData }
-    }
-
-    return res.data
-  } catch (e) {
-    console.error('Błąd przy aktualizacji kursu:', e)
-    throw e
-  }
-}
-
-// ścieżka do backendu
-const createCourse = async (courseData) => {
-  try {
-    const res = await axios.post(`http://localhost:5000/courses`, courseData)
-
-    if (res.data.course_id) {
-      courses.value.push({ course_id: res.data.course_id, ...courseData })
-    }
-
-    return res.data
-  } catch (e) {
-    console.error('Błąd przy tworzeniu kursu:', e)
-    throw e
-  }
+const updateCourse = (courseItem) => {
+  Object.assign(update_course, courseItem)
+  show_update_course.value = true
 }
 
 // ścieżka do backendu
@@ -159,7 +136,6 @@ onMounted(async () => {
   await getCoursesForUser()
   await getMeetingsForUser()
   num_bought_courses.value = await getNumberofBoughtCourses(user.id)
-  console.log(courses.value)
 })
 </script>
 
@@ -220,7 +196,20 @@ onMounted(async () => {
       </div>
     </div>
     <p v-else><b>Na ten moment nie stworzyłeś/aś żadnego kursu!</b></p>
-    <RouterLink to="/create_course" class="link">Dodaj kurs</RouterLink>
+    <UpdateCourse
+        v-if="show_update_course"
+        v-model:courses="courses"
+        v-model:update_course="update_course"
+        v-model:user="user"
+        v-model:show_update_course="show_update_course"
+    ></UpdateCourse>
+    <AddCourse
+        v-if="show_course"
+        v-model:courses="courses"
+        v-model:user="user"
+        v-model:show_course="show_course"
+    ></AddCourse>
+    <button type="button" class="link" @click="show_course = true">Dodaj kurs</button>
   </div>
   <div class="meetings">
     <h2>Twoje spotkania</h2>

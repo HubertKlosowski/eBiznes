@@ -113,7 +113,7 @@ class Teacher(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
-    specialty = db.Column(db.Enum('matematyka', 'fizyka', 'biologia', 'chemia', name='teacher_specialty'))
+    specialty = db.Column(db.Enum('Matematyka', 'Fizyka', 'Biologia', 'Chemia', name='teacher_specialty'))
     description = db.Column(db.Text)
     experience = db.Column(db.Integer)
 
