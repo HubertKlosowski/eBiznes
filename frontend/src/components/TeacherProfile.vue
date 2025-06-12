@@ -100,10 +100,10 @@ const getMeetingsForUser = async () => {
   }
 }
 
-onMounted(async () => {
-  await getCoursesForUser()
-  await getMeetingsForUser()
-  await getNumberofBoughtCourses(user.id)
+onMounted(() => {
+  getCoursesForUser()
+  getMeetingsForUser()
+  getNumberofBoughtCourses(user.id)
 })
 </script>
 
@@ -161,7 +161,7 @@ onMounted(async () => {
           <p class="course-duration"><strong>Czas:</strong> {{ courseItem.duration }}h</p>
           <p class="course-price"><strong>Cena:</strong> {{ courseItem.price }} zł</p>
           <p class="course-score"><strong>Ocena:</strong> {{ courseItem.score }}/5</p>
-          <p class="course-score"><strong>Ilość zapisów:</strong> {{ _.find(num_bought_courses, ['course_id', courseItem.id])['count'] }} </p>
+          <p class="course-score"><strong>Ilość zapisów:</strong> {{ (_.find(num_bought_courses, ['course_id', courseItem.id]) || { count: 0 }).count }} </p>
         </div>
       </div>
     </div>

@@ -48,6 +48,7 @@ class Lesson(db.Model):
 class Test(db.Model):
     __tablename__ = 'tests'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = db.Column(db.String(100))
     content = db.Column(db.JSON)
     grade = db.Column(db.Float)
     course_id = db.Column(UUID(as_uuid=True), db.ForeignKey('courses.id'))
@@ -55,6 +56,7 @@ class Test(db.Model):
     def to_dict(self):
         return {
             'id': str(self.id),
+            'title': self.title,
             'content': self.content,
             'grade': self.grade,
             'course_id': str(self.course_id)
@@ -116,6 +118,7 @@ class Teacher(db.Model):
     specialty = db.Column(db.Enum('Matematyka', 'Fizyka', 'Biologia', 'Chemia', name='teacher_specialty'))
     description = db.Column(db.Text)
     experience = db.Column(db.Integer)
+    courses = db.relationship('Course', backref='teacher', cascade='all, delete', passive_deletes=True)
 
     def to_dict(self):
         return {

@@ -8,6 +8,7 @@ import FormButton from "@/components/FormButton.vue";
 import FormTextArea from "@/components/FormTextArea.vue";
 import axios from "axios";
 import Shop from "@/components/Shop.vue";
+import ResponseOutput from "@/components/ResponseOutput.vue";
 
 const route = useRoute()
 const courseId = route.params.id
@@ -19,7 +20,7 @@ const teacher = reactive({
 })
 const lessons = ref(null)
 const opinions = ref(null)
-const tests = ref(null)
+const tests = ref([])
 const opinion = reactive({
   title: '',
   content: '',
@@ -30,6 +31,20 @@ const user = reactive(JSON.parse(localStorage.getItem('user')))
 const type = ref((user.specialty !== undefined && user.id === course.teacher_id) ? 'teacher' : 'student')
 const student_in_course = ref([])
 const show_shop = ref(false)
+const show_test = reactive({
+  test: -1,
+  form: false
+})
+const test = reactive({
+  title: '',
+  content: {},
+  course_id: course.id
+})
+
+const after_create = ref([])
+const title = ref('')
+const subtitle = ref('')
+const response_status = ref(0)
 
 // ścieżka do backendu
 const getStudentsForCourse = async () => {
@@ -90,7 +105,9 @@ const addOpinion = async () => {
 const getLessonsByCourse = async () => {
   try {
     const res = await axios.get(`http://localhost:5000/courses/${course.id}/lessons`)
-    lessons.value = res.data
+    if (!_.isEmpty(res.data)) {
+      lessons.value = res.data
+    }
   } catch (e) {
     console.error('Błąd przy pobieraniu lekcji:', e)
   }
@@ -99,9 +116,62 @@ const getLessonsByCourse = async () => {
 const getTestsByCourse = async () => {
   try {
     const res = await axios.get(`http://localhost:5000/courses/${course.id}/tests`)
-    tests.value = res.data
+    if (!_.isEmpty(res.data)) {
+      tests.value = res.data
+    }
   } catch (e) {
     console.error('Błąd przy pobieraniu testów:', e)
+  }
+}
+
+const addTest = async () => {
+  try {
+    const response = await axios.post('http://localhost:5000/tests', test)
+    tests.value.push(response.data.test)
+    title.value = 'Test dodany pomyślnie'
+    subtitle.value = 'Nowy test został utworzony i dodany do listy.'
+  } catch (e) {
+    if (typeof e.response === 'undefined') {
+      after_create.value = ['Nie udało się połączyć z serwerem.']
+      response_status.value = 500
+      title.value = 'Problem z serwerem'
+      subtitle.value = 'Proszę poczekać, serwer nie jest teraz dostępny.'
+    } else {
+      const error_response = e.response
+      after_create.value = error_response.data.error
+      response_status.value = error_response.status
+      title.value = 'Problem z danymi'
+      subtitle.value = 'Dane przekazane do formularza są błędne. Proszę je poprawić, zgodnie z komunikatami wyświetlanymi poniżej:'
+    }
+  }
+  Object.assign(test, {
+    title: '',
+    content: {},
+    course_id: course.id
+  })
+}
+
+const deleteTest = async (testId) => {
+  try {
+    const response = await axios.delete(`http://localhost:5000/tests/${testId}`, test)
+    _.remove(tests.value, function (o) {
+      return _.isEqual(o, response.data.test)
+    })
+    title.value = 'Test usunięty pomyślnie'
+    subtitle.value = 'Test został trwale usunięty z systemu.'
+  } catch (e) {
+    if (typeof e.response === 'undefined') {
+      after_create.value = ['Nie udało się połączyć z serwerem.']
+      response_status.value = 500
+      title.value = 'Problem z serwerem'
+      subtitle.value = 'Proszę poczekać, serwer nie jest teraz dostępny.'
+    } else {
+      const error_response = e.response
+      after_create.value = error_response.data.error
+      response_status.value = error_response.status
+      title.value = 'Problem z danymi'
+      subtitle.value = 'Dane przekazane do formularza są błędne. Proszę je poprawić, zgodnie z komunikatami wyświetlanymi poniżej:'
+    }
   }
 }
 
@@ -124,6 +194,13 @@ onMounted(async () => {
 })
 </script>
 <template>
+  <ResponseOutput
+      v-model:response_status="response_status"
+      :after_create="after_create"
+      v-if="response_status >= 100"
+      :title="title"
+      :subtitle="subtitle"
+  ></ResponseOutput>
   <div class="courses-main">
     <div class="course-header">
       <h2>{{ course.title }}</h2>
@@ -176,10 +253,55 @@ onMounted(async () => {
     </div>
     <div class="course-tests">
       <h3>Testy</h3>
-      <div class="tests" v-if="!_.isEmpty(tests)">
-        <div class="test" v-for="(test, i) in tests" :key="i"></div>
+      <div class="tests">
+        <div class="test" v-for="(test, i) in tests" :key="i">
+          <div class="el">{{ i + 1 }}</div>
+          <div class="el">{{ test.title }}</div>
+          <div
+              class="reset-btn"
+              @click="deleteTest(test.id)"
+              @mouseenter="show_test.test = 0"
+              @mouseleave="show_test.test = -1"
+          >
+            <font-awesome-icon :icon="['fas', 'minus']" />
+            <span v-if="show_test.test === 0">Usuń test</span>
+          </div>
+        </div>
+        <div class="test" v-if="show_test.form === false">
+          <div
+              class="submit-btn"
+              @mouseenter="show_test.test = 1"
+              @mouseleave="show_test.test = -1"
+              @click="show_test.form = true"
+          >
+            <font-awesome-icon :icon="['fas', 'plus']" />
+            <span v-if="show_test.test === 1">Dodaj test</span>
+          </div>
+        </div>
+        <div class="test-form" v-if="show_test.form === true">
+          <form @submit.prevent="addTest">
+            <FormInputText
+                :placeholder="'Tytuł testu'"
+                v-model:input_value="test.title"
+            ></FormInputText>
+
+            <div class="info-btn">
+              <font-awesome-icon :icon="['fas', 'file-import']" />
+              <span>Dodaj plik</span>
+            </div>
+
+            <FormButton :reset="true" @redEvent="() => { show_test.form = false; show_test.test = -1 }">
+              <template v-slot:green>
+                Dodaj test
+              </template>
+              <template v-slot:red>
+                Resetuj
+              </template>
+            </FormButton>
+          </form>
+        </div>
       </div>
-      <p v-else><b>Na ten moment nauczyciel nie dodał żadnych testów do kursu!</b></p>
+      <p v-if="_.isEmpty(tests)"><b>Na ten moment nauczyciel nie dodał żadnych testów do kursu!</b></p>
     </div>
     <div class="course-opinions">
       <div class="form">
@@ -249,14 +371,47 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.students {
+.info-btn, .submit-btn, .reset-btn {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.test {
+  width: 80%;
+  min-height: 5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  margin-bottom: 1rem;
+}
+
+.test-form {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  padding: 1rem 0 1rem 0;
+}
+
+.el {
+  width: 33%;
+}
+
+.students, .tests, .lessons {
   width: 100%;
   max-height: 300px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
 }
 
 .student {

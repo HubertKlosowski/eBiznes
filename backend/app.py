@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 from models import db, Meeting, Lesson, Test, Opinion, Student, Course, Teacher, student_course
 from config import Config
 from datetime import datetime
-from flask_cors import CORS, cross_origin
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
+from werkzeug.security import generate_password_hash
+from uuid import UUID
 import uuid
 
 app = Flask(__name__)
@@ -41,6 +42,54 @@ def get_lessons_by_course(course_id):
 def get_tests_by_course(course_id):
     tests = Test.query.filter_by(course_id=course_id).all()
     return jsonify([t.to_dict() for t in tests]), 200
+
+@app.route('/tests', methods=['POST'])
+def create_test():
+    try:
+        data = request.get_json()
+
+        if not data or 'title' not in data or 'course_id' not in data:
+            return jsonify({'error': 'Tytuł i id kursu są wymagane'}), 400
+
+        course = Course.query.get(data['course_id'])
+        if not course:
+            return jsonify({'error': 'Nie ma kursu o podanym id'}), 404
+
+        new_test = Test(
+            title=data['title'],
+            content=data.get('content', {}),
+            grade=data.get('grade'),
+            course_id=data['course_id']
+        )
+
+        db.session.add(new_test)
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Test dodany pomyślnie',
+            'test': new_test.to_dict()
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/tests/<uuid:test_id>', methods=['DELETE'])
+def delete_test(test_id):
+    try:
+        test = Test.query.get(test_id)
+        if not test:
+            return jsonify({'error': ['Test o podanym id nie istnieje']}), 404
+
+        db.session.delete(test)
+        db.session.commit()
+
+        return jsonify({'message': ['Test usunięty pomyślnie'], 'test': test.to_dict()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(e)
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/courses/<uuid:course_id>/opinions', methods=['POST'])
 def add_opinion(course_id):
@@ -147,6 +196,47 @@ def login_student():
     return jsonify({'error': ['Nieprawidłowy login lub hasło.']}), 401
 
 
+@app.route('/students/<uuid:student_id>', methods=['PUT'])
+def update_student(student_id):
+    data = request.get_json()
+
+    if all(not data.get(field) for field in ['name', 'username', 'email', 'level']):
+        return jsonify({'error': ['Wszystkie pola są puste. Nie można zaktualizować użytkownika.']}), 400
+
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': ['Student nie został znaleziony.']}), 404
+
+    if data.get('name'): student.name = data['name']
+    if data.get('username'): student.username = data['username']
+    if data.get('email'): student.email = data['email']
+    if data.get('level'): student.level = data['level']
+
+    db.session.commit()
+    return jsonify({'message': 'Student zaktualizowany', 'student': student.to_dict()}), 200
+
+@app.route('/students/<uuid:student_id>', methods=['DELETE'])
+def delete_student(student_id):
+    try:
+        student = Student.query.get(student_id)
+        if not student:
+            return jsonify({
+                'error': ['Nie znaleziono studenta o podanym identyfikatorze.']
+            }), 404
+
+        db.session.delete(student)
+        db.session.commit()
+
+        return jsonify({
+            'success': 'Student został pomyślnie usunięty.'
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'error': [f'Wystąpił błąd przy usuwaniu studenta: {str(e)}']
+        }), 500
+
 @app.route('/students/forgot', methods=['POST'])
 def forgot_password():
     data = request.get_json()
@@ -197,6 +287,52 @@ def register_teacher():
             'error': [f'Wystąpił błąd przy tworzeniu konta: {str(e)}']
         }), 500
 
+@app.route('/teachers/<uuid:teacher_id>', methods=['PUT'])
+def update_teacher(teacher_id):
+    data = request.get_json()
+
+    if all(not data.get(field) and data.get(field) != 0 for field in ['name', 'username', 'email', 'specialty', 'experience', 'description']):
+        return jsonify({'error': ['Wszystkie pola są puste. Nie można zaktualizować użytkownika.']}), 400
+
+    teacher = Teacher.query.get(teacher_id)
+    if not teacher:
+        return jsonify({'error': ['Nauczyciel nie został znaleziony.']}), 404
+
+    if data.get('name'): teacher.name = data['name']
+    if data.get('username'): teacher.username = data['username']
+    if data.get('email'): teacher.email = data['email']
+    if data.get('specialty'): teacher.specialty = data['specialty']
+    if data.get('description') is not None: teacher.description = data['description']
+    if data.get('experience') is not None: teacher.experience = data['experience']
+
+    db.session.commit()
+    return jsonify({'message': 'Nauczyciel zaktualizowany', 'teacher': teacher.to_dict()}), 200
+
+@app.route('/teachers/<uuid:teacher_id>', methods=['DELETE'])
+def delete_teacher(teacher_id):
+    try:
+        teacher = Teacher.query.get(teacher_id)
+        if not teacher:
+            return jsonify({
+                'error': ['Nie znaleziono nauczyciela o podanym identyfikatorze.']
+            }), 404
+
+        if teacher.courses:
+            return jsonify({
+                'error': ['Nie można usunąć nauczyciela, który ma przypisane kursy.']
+            }), 400
+
+        db.session.delete(teacher)
+        db.session.commit()
+        return jsonify({
+            'success': 'Nauczyciel został pomyślnie usunięty.'
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'error': [f'Wystąpił błąd przy usuwaniu nauczyciela: {str(e)}']
+        }), 500
 
 @app.route('/teachers/login', methods=['POST'])
 def login_teacher():
@@ -214,7 +350,6 @@ def login_teacher():
         return jsonify({'message': 'Zalogowano pomyślnie', 'teacher': teacher.to_dict()}), 200
 
     return jsonify({'error': ['Nieprawidłowy login lub hasło.']}), 401
-
 
 @app.route('/teachers/forgot', methods=['POST'])
 def forgot_teacher_password():
@@ -280,7 +415,7 @@ def create_course():
     )
     db.session.add(new_course)
     db.session.commit()
-    return jsonify({'message': 'Course created', 'course_id': new_course.to_dict()})
+    return jsonify({'message': 'Course created', 'course': new_course.to_dict()})
 
 @app.route('/courses/<uuid:course_id>', methods=['DELETE'])
 def delete_course(course_id):

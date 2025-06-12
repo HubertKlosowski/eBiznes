@@ -23,15 +23,9 @@ const course = reactive({
 // ścieżka do backendu
 const addCourse = async () => {
   try {
-    console.log(course)
     const res = await axios.post(`http://localhost:5000/courses`, course)
-
-    if (res.data.course_id) {
-      courses.value.push({ course_id: res.data.course_id, ...course })
-    }
-
+    courses.value.push(res.data.course)
     resetInputs()
-    return res.data
   } catch (e) {
     console.error('Błąd przy tworzeniu kursu:', e)
     throw e
@@ -73,11 +67,11 @@ const resetInputs = () => {
       ></FormInputText>
 
       <FormTextArea
-            :label_for="'description'"
-            :label="'Opis kursu'"
-            :placeholder="'Podaj opis kursu'"
-            v-model:input_value="course.description"
-        ></FormTextArea>
+          :label_for="'description'"
+          :label="'Opis kursu'"
+          :placeholder="'Podaj opis kursu'"
+          v-model:input_value="course.description"
+      ></FormTextArea>
 
       <FormButton :reset="true" @redEvent="() => { resetInputs() }">
         <template v-slot:green>

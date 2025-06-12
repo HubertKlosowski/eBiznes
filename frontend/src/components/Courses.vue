@@ -10,7 +10,7 @@ import axios from "axios";
 
 const router = useRouter()
 const route = useRoute()
-const courses = ref(null)
+const courses = ref(JSON.parse(localStorage.getItem('courses')))
 const render_courses = ref(null)
 const subjects = ref(null)
 const filters = reactive({
@@ -55,18 +55,6 @@ const filterCourses = () => {
   }
 }
 
-const getCourses = async () => {
-  try {
-    const response = await axios.get('http://localhost:5000/courses')
-    courses.value = response.data
-  } catch (e) {
-    console.error('Błąd podczas pobierania kursów:', e)
-  }
-  render_courses.value = courses.value
-  subjects.value = _.uniq(_.map(courses.value, 'subject'))
-  localStorage.setItem('courses', JSON.stringify(courses.value))
-}
-
 const goToCourse = (i) => {
   router.push(`/courses/${i}`)
 }
@@ -80,7 +68,9 @@ watch(filters, () => {
 })
 
 onMounted(() => {
-  getCourses()
+  courses.value = JSON.parse(localStorage.getItem('courses'))
+  render_courses.value = courses.value
+  subjects.value = _.uniq(_.map(courses.value, 'subject'))
   if (!_.isEmpty(route.query)) {
     filters.subject = route.query.category
     render_courses.value = _.filter(render_courses.value, function (c) { return c.subject === route.query.category })

@@ -55,8 +55,9 @@ const goToTeacher = (i) => {
   router.push(`/teachers/${i}`)
 }
 
-onMounted(() => {
-  getTeachers()
+onMounted(async () => {
+  await getTeachers()
+  console.log(teachers.value)
 })
 </script>
 
@@ -102,14 +103,14 @@ onMounted(() => {
         </div>
       </div>
       <div class="teachers-list">
-        <div class="teacher" v-for="(teacher, i) in render_teachers" :key="teacher">
+        <div class="teacher" v-for="(teacher, i) in render_teachers" :key="i">
           <div class="important_info">
             <h3>{{ teacher.name }}</h3>
             <span>Adres mail: {{ teacher.email }}</span>
             <span>Specjalność: {{ teacher.specialty }}</span>
             <span>Długość stażu: {{ teacher.experience }}</span>
           </div>
-          <div @click="goToTeacher(i)" class="link">
+          <div @click="goToTeacher(teacher.id)" class="link">
             Pokaż szczegóły
           </div>
         </div>

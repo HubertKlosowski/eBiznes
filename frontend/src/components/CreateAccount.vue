@@ -76,7 +76,7 @@ const resetInputs = () => {
   <ResponseOutput
       v-model:response_status="response_status"
       :after_create="after_create"
-      v-if="response_status >= 200"
+      v-if="response_status >= 400"
       :title="title"
       :subtitle="subtitle"
   ></ResponseOutput>
