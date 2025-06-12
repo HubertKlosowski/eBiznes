@@ -38,6 +38,53 @@ def get_lessons_by_course(course_id):
     lessons = Lesson.query.filter_by(course_id=course_id).all()
     return jsonify([l.to_dict() for l in lessons]), 200
 
+@app.route('/lessons', methods=['POST'])
+def create_lesson():
+    try:
+        data = request.get_json()
+
+        if not data or 'title' not in data or 'course_id' not in data:
+            return jsonify({'error': 'Tytuł i id kursu są wymagane'}), 400
+
+        course = Course.query.get(data['course_id'])
+        if not course:
+            return jsonify({'error': 'Nie ma kursu o podanym id'}), 404
+
+        new_lesson = Lesson(
+            title=data['title'],
+            content=data.get('content', {}),
+            course_id=data['course_id']
+        )
+
+        db.session.add(new_lesson)
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Lekcja dodana pomyślnie',
+            'lesson': new_lesson.to_dict()
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/lessons/<uuid:lesson_id>', methods=['DELETE'])
+def delete_lesson(lesson_id):
+    try:
+        lesson = Lesson.query.get(lesson_id)
+        if not lesson:
+            return jsonify({'error': ['Lekcja o podanym id nie istnieje']}), 404
+
+        db.session.delete(lesson)
+        db.session.commit()
+
+        return jsonify({'message': ['Lekcja usunięta pomyślnie'], 'lesson': lesson.to_dict()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(e)
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/courses/<uuid:course_id>/tests', methods=['GET'])
 def get_tests_by_course(course_id):
     tests = Test.query.filter_by(course_id=course_id).all()

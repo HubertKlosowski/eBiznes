@@ -18,7 +18,7 @@ const teacher = reactive({
   name: '',
   username: ''
 })
-const lessons = ref(null)
+const lessons = ref([])
 const opinions = ref(null)
 const tests = ref([])
 const opinion = reactive({
@@ -36,6 +36,16 @@ const show_test = reactive({
   form: false
 })
 const test = reactive({
+  title: '',
+  content: {},
+  course_id: course.id
+})
+
+const show_lesson = reactive({
+  lesson: -1,
+  form: false
+})
+const lesson = reactive({
   title: '',
   content: {},
   course_id: course.id
@@ -175,6 +185,57 @@ const deleteTest = async (testId) => {
   }
 }
 
+const addLesson = async () => {
+  try {
+    const response = await axios.post('http://localhost:5000/lessons', lesson)
+    lessons.value.push(response.data.lesson)
+    title.value = 'Lekcja dodana pomyślnie'
+    subtitle.value = 'Nowa lekcja została utworzona i dodana do listy.'
+  } catch (e) {
+    if (typeof e.response === 'undefined') {
+      after_create.value = ['Nie udało się połączyć z serwerem.']
+      response_status.value = 500
+      title.value = 'Problem z serwerem'
+      subtitle.value = 'Proszę poczekać, serwer nie jest teraz dostępny.'
+    } else {
+      const error_response = e.response
+      after_create.value = error_response.data.error
+      response_status.value = error_response.status
+      title.value = 'Problem z danymi'
+      subtitle.value = 'Dane przekazane do formularza są błędne. Proszę je poprawić, zgodnie z komunikatami wyświetlanymi poniżej:'
+    }
+  }
+  Object.assign(lesson, {
+    title: '',
+    content: {},
+    course_id: course.id
+  })
+}
+
+const deleteLesson = async (lessonId) => {
+  try {
+    const response = await axios.delete(`http://localhost:5000/lessons/${lessonId}`, lesson)
+    _.remove(lessons.value, function (o) {
+      return _.isEqual(o, response.data.lesson)
+    })
+    title.value = 'Lekcja usunięta pomyślnie'
+    subtitle.value = 'Lekcja została trwale usunięta z systemu.'
+  } catch (e) {
+    if (typeof e.response === 'undefined') {
+      after_create.value = ['Nie udało się połączyć z serwerem.']
+      response_status.value = 500
+      title.value = 'Problem z serwerem'
+      subtitle.value = 'Proszę poczekać, serwer nie jest teraz dostępny.'
+    } else {
+      const error_response = e.response
+      after_create.value = error_response.data.error
+      response_status.value = error_response.status
+      title.value = 'Problem z danymi'
+      subtitle.value = 'Dane przekazane do formularza są błędne. Proszę je poprawić, zgodnie z komunikatami wyświetlanymi poniżej:'
+    }
+  }
+}
+
 const resetInputs = () => {
   Object.assign(opinion, {
     title: '',
@@ -192,6 +253,8 @@ onMounted(async () => {
     student_in_course.value = await getStudentsForCourse()
   }
 })
+
+console.log(lessons.value)
 </script>
 <template>
   <ResponseOutput
@@ -201,7 +264,10 @@ onMounted(async () => {
       :title="title"
       :subtitle="subtitle"
   ></ResponseOutput>
-  <div class="courses-main">
+  <div class="courses-main" :style="{
+    opacity: response_status < 200 ? '1' : '0.3',
+    pointerEvents: response_status < 200 ? 'auto' : 'none'
+  }">
     <div class="course-header">
       <h2>{{ course.title }}</h2>
       <button type="button" @click="show_shop = true" class="link">
@@ -246,10 +312,56 @@ onMounted(async () => {
     </div>
     <div class="course-lessons">
       <h3>Lekcje</h3>
-      <div class="lessons" v-if="!_.isEmpty(lessons)">
-        <div class="lesson" v-for="(lesson, i) in lessons" :key="i"></div>
+      <div class="lessons">
+        <div class="lesson" v-for="(lesson, i) in lessons" :key="i">
+          <div class="el">{{ i + 1 }}</div>
+          <div class="el">{{ lesson.title }}</div>
+          <div
+              class="reset-btn"
+              @click="deleteLesson(lesson.id)"
+              @mouseenter="show_lesson.lesson = 0"
+              @mouseleave="show_lesson.lesson = -1"
+              v-if="type === 'teacher'"
+          >
+            <font-awesome-icon :icon="['fas', 'minus']" />
+            <span v-if="show_lesson.lesson === 0">Usuń lekcję</span>
+          </div>
+        </div>
+        <div class="lesson" v-if="show_lesson.form === false && type === 'teacher'">
+          <div
+              class="submit-btn"
+              @mouseenter="show_lesson.lesson = 1"
+              @mouseleave="show_lesson.lesson = -1"
+              @click="show_lesson.form = true"
+          >
+            <font-awesome-icon :icon="['fas', 'plus']" />
+            <span v-if="show_lesson.lesson === 1">Dodaj lekcję</span>
+          </div>
+        </div>
+        <div class="lesson-form" v-if="show_lesson.form === true && type === 'teacher'">
+          <form @submit.prevent="addLesson">
+            <FormInputText
+                :placeholder="'Tytuł testu'"
+                v-model:input_value="lesson.title"
+            ></FormInputText>
+
+            <div class="info-btn">
+              <font-awesome-icon :icon="['fas', 'file-import']" />
+              <span>Dodaj plik</span>
+            </div>
+
+            <FormButton :reset="true" @redEvent="() => { show_lesson.form = false; show_lesson.lesson = -1 }">
+              <template v-slot:green>
+                Dodaj lekcję
+              </template>
+              <template v-slot:red>
+                Ukryj
+              </template>
+            </FormButton>
+          </form>
+        </div>
       </div>
-      <p v-else><b>Na ten moment nauczyciel nie dodał żadnych lekcji do kursu!</b></p>
+      <p v-if="_.isEmpty(lessons)"><b>Na ten moment nauczyciel nie dodał żadnych lekcji do kursu!</b></p>
     </div>
     <div class="course-tests">
       <h3>Testy</h3>
@@ -379,7 +491,7 @@ onMounted(async () => {
   align-items: center;
 }
 
-.test {
+.test, .lesson {
   width: 80%;
   min-height: 5rem;
   display: flex;
@@ -391,7 +503,7 @@ onMounted(async () => {
   margin-bottom: 1rem;
 }
 
-.test-form {
+.test-form, .lesson-form {
   width: 80%;
   display: flex;
   flex-direction: row;

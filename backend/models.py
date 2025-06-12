@@ -35,12 +35,14 @@ class Meeting(db.Model):
 class Lesson(db.Model):
     __tablename__ = 'lessons'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = db.Column(db.String(100))
     content = db.Column(db.JSON)
     course_id = db.Column(UUID(as_uuid=True), db.ForeignKey('courses.id'))
 
     def to_dict(self):
         return {
             'id': str(self.id),
+            'title': self.title,
             'content': self.content,
             'course_id': str(self.course_id)
         }
