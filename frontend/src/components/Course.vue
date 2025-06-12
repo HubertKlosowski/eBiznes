@@ -7,11 +7,16 @@ import FormInputSelect from "@/components/FormInputSelect.vue";
 import FormButton from "@/components/FormButton.vue";
 import FormTextArea from "@/components/FormTextArea.vue";
 import axios from "axios";
+import Shop from "@/components/Shop.vue";
 
 const route = useRoute()
 const courseId = route.params.id
 
-const course = reactive(JSON.parse(localStorage.getItem('courses'))[courseId])
+const course = reactive(_.find(JSON.parse(localStorage.getItem('courses')), ['id', courseId]))
+const teacher = reactive({
+  name: '',
+  username: ''
+})
 const lessons = ref(null)
 const opinions = ref(null)
 const tests = ref(null)
@@ -20,6 +25,50 @@ const opinion = reactive({
   content: '',
   score: 0
 })
+
+const user = reactive(JSON.parse(localStorage.getItem('user')))
+const type = ref((user.specialty !== undefined && user.id === course.teacher_id) ? 'teacher' : 'student')
+const student_in_course = ref([])
+const show_shop = ref(false)
+
+// ścieżka do backendu
+const getStudentsForCourse = async () => {
+  try {
+    const res = await axios.get(`http://localhost:5000/courses/${course.id}/students`)
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy pobieraniu studentów kursu:', e)
+    throw e
+  }
+}
+
+// ścieżka do backendu
+const getTeacherInfo = async () => {
+  try {
+    const res = await axios.get(`http://localhost:5000/teachers/${course.teacher_id}`)
+    Object.assign(teacher, {
+      name: res.data['name'],
+      username: res.data['username']
+    })
+    return res.data
+  } catch (e) {
+    console.error('Błąd przy pobieraniu studentów kursu:', e)
+    throw e
+  }
+}
+
+// ścieżka do backendu
+const deleteStudentFromCourse = async (studentId) => {
+  if (type === 'teacher') {
+    try {
+      const res = await axios.delete(`http://localhost:5000/courses/${course.id}/students/${studentId}`)
+      return res.data
+    } catch (e) {
+      console.error('Błąd przy usuwaniu studenta z kursu:', e)
+      throw e
+    }
+  }
+}
 
 const getOpinions = async () => {
   try {
@@ -66,20 +115,23 @@ const resetInputs = () => {
   })
 }
 
-onMounted(() => {
-  getOpinions()
-  getTestsByCourse()
-  getLessonsByCourse()
-  Object.assign(course, JSON.parse(localStorage.getItem('courses'))[courseId])
+onMounted(async () => {
+  await getOpinions()
+  await getTestsByCourse()
+  await getLessonsByCourse()
+  await getTeacherInfo()
+  if (type === 'teacher') {
+    student_in_course.value = await getStudentsForCourse()
+  }
 })
 </script>
 <template>
   <div class="courses-main">
     <div class="course-header">
       <h2>{{ course.title }}</h2>
-      <RouterLink to="/shop" class="link">
+      <button type="button" @click="show_shop = true" class="link">
         Kup
-      </RouterLink>
+      </button>
       <RouterLink to="/courses" class="link">
         Wróć
       </RouterLink>
@@ -112,7 +164,7 @@ onMounted(() => {
           </div>
           <div class="info-item">
             <dt>Nauczyciel:</dt>
-            <dd>Hubert</dd>
+            <dd>{{ teacher.name }}</dd>
           </div>
         </dl>
       </div>
@@ -175,6 +227,19 @@ onMounted(() => {
       </div>
       <p v-else><b>Na ten moment kurs nie posiada opinii!</b></p>
     </div>
+    <div class="course-students" v-if="type === 'teacher'">
+      <h3>Studenci zapisani do kursu</h3>
+      <div class="students" v-if="!_.isEmpty(student_in_course)">
+        <div class="student" v-for="(student, i) in student_in_course" :key="i"></div>
+      </div>
+      <p v-else><b>Na ten moment żaden student nie dołączył do kursu!</b></p>
+    </div>
+    <Shop
+        v-if="show_shop"
+        v-model:user="user"
+        v-model:students="student_in_course"
+        v-model:show_shop="show_shop"
+    ></Shop>
   </div>
 </template>
 
@@ -307,7 +372,7 @@ dd {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.course-lessons, .course-tests {
+.course-lessons, .course-tests, .course-students {
   width: 90%;
   display: flex;
   flex-direction: column;
@@ -321,7 +386,8 @@ dd {
 
 .course-lessons h3,
 .course-tests h3,
-.course-opinions h3 {
+.course-opinions h3,
+.course-students h3 {
   margin-bottom: 1rem;
   color: #065f46;
 }

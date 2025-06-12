@@ -7,8 +7,8 @@ import axios from "axios";
 const router = useRouter()
 
 const user = reactive(JSON.parse(localStorage.getItem('user')))
-const courses = ref([])
-const meetings = ref([])
+const courses = ref(JSON.parse(localStorage.getItem('user_courses')))
+const meetings = ref(JSON.parse(localStorage.getItem('user_meetings')))
 
 const logoutUser = async () => {
   localStorage.clear()
@@ -19,7 +19,7 @@ const logoutUser = async () => {
 const getCoursesForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/courses')
-    localStorage.setItem('courses', JSON.stringify(response.data))
+    localStorage.setItem('user_courses', JSON.stringify(response.data))
   } catch (e) {
     console.log(e)
   }
@@ -29,17 +29,15 @@ const getCoursesForUser = async () => {
 const getMeetingsForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/meetings')
-    localStorage.setItem('meetings', JSON.stringify(response.data))
+    localStorage.setItem('user_meetings', JSON.stringify(response.data))
   } catch (e) {
     console.log(e)
   }
 }
 
-onMounted(() => {
-  getCoursesForUser()
-  getMeetingsForUser()
-  courses.value = JSON.parse(localStorage.getItem('courses'))
-  meetings.value = JSON.parse(localStorage.getItem('meetings'))
+onMounted(async () => {
+  await getCoursesForUser()
+  await getMeetingsForUser()
 })
 </script>
 
@@ -76,9 +74,17 @@ onMounted(() => {
   <div class="account-user-courses">
     <h2>Twoje kursy</h2>
     <div class="courses" v-if="!_.isEmpty(courses)">
-      <div class="course" v-for="course in courses" :key="course"></div>
+      <div class="course" v-for="course in courses" :key="course.id">
+        <h3 class="course-title">{{ course.title }}</h3>
+        <p><strong>Przedmiot:</strong> {{ course.subject }}</p>
+        <p><strong>Opis:</strong> {{ course.description }}</p>
+        <p><strong>Poziom:</strong> {{ course.level }}</p>
+        <p><strong>Czas trwania:</strong> {{ course.duration }}h</p>
+        <p><strong>Cena:</strong> {{ course.price }} zł</p>
+        <p><strong>Ocena:</strong> {{ course.score }}/5</p>
+      </div>
     </div>
-    <p v-else><b>Na ten moment nie zapisałeś/aś na żaden kurs!</b></p>
+    <p v-else><b>Na ten moment nie zapisałeś/aś się na żaden kurs!</b></p>
   </div>
   <div class="meetings">
     <h2>Twoje spotkania</h2>

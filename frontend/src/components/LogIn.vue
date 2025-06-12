@@ -41,6 +41,8 @@ const resetInputs = () => {
     type: ''
   })
 }
+
+console.log(change_view.value)
 </script>
 
 <template>
@@ -91,7 +93,10 @@ const resetInputs = () => {
       </div>
     </form>
   </div>
-  <CreateAccount v-else></CreateAccount>
+  <CreateAccount
+      v-else
+      v-model:change_view="change_view"
+  ></CreateAccount>
 </template>
 
 <style scoped>

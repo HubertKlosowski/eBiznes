@@ -80,8 +80,6 @@ watch(today, () => {
 onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
 })
-
-console.log(user)
 </script>
 
 <template>

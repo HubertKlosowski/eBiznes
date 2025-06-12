@@ -16,9 +16,10 @@ const user = reactive({
   experience: 0,
   password: ''
 })
+const change_view = defineModel('change_view')
 const router = useRouter()
 const student_levels = ref(['podstawówka', 'liceum', 'technikum', 'studia'])
-const teacher_levels = ref(['matematyka', 'fizyka', 'biologia', 'chemia'])
+const teacher_levels = ref(['Matematyka', 'Fizyka', 'Biologia', 'Chemia'])
 
 const createAccount = async () => {
   try {
@@ -26,8 +27,8 @@ const createAccount = async () => {
         await axios.post('http://localhost:5000/students/register', user) :
         await axios.post('http://localhost:5000/teachers/register', user)
 
-    console.log(response)
     resetInputs()
+    change_view.value = !change_view.value
   } catch (e) {
     console.log(e)
   }

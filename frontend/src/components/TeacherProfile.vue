@@ -13,6 +13,7 @@ const courses = ref([])
 const meetings = ref([])
 const num_bought_courses = ref()
 const show_course = ref(false)
+const show_meeting = ref(false)
 const update_course = reactive({
   description: '',
   duration: 0,
@@ -41,39 +42,6 @@ const getNumberofBoughtCourses = async (teacherId) => {
 }
 
 // ścieżka do backendu
-const getStudentsForCourse = async (courseId) => {
-  try {
-    const res = await axios.get(`http://localhost:5000/courses/${courseId}/students`)
-    return res.data
-  } catch (e) {
-    console.error('Błąd przy pobieraniu studentów kursu:', e)
-    throw e
-  }
-}
-
-// ścieżka do backendu
-const deleteStudentFromCourse = async (courseId, studentId) => {
-  try {
-    const res = await axios.delete(`http://localhost:5000/courses/${courseId}/students/${studentId}`)
-    return res.data
-  } catch (e) {
-    console.error('Błąd przy usuwaniu studenta z kursu:', e)
-    throw e
-  }
-}
-
-// ścieżka do backendu
-const addStudentToCourse = async (courseId, studentId) => {
-  try {
-    const res = await axios.post(`http://localhost:5000/courses/${courseId}/students/${studentId}`)
-    return res.data
-  } catch (e) {
-    console.error('Błąd przy dodawaniu studenta do kursu:', e)
-    throw e
-  }
-}
-
-// ścieżka do backendu
 const updateCourse = (courseItem) => {
   Object.assign(update_course, courseItem)
   show_update_course.value = true
@@ -83,7 +51,7 @@ const updateCourse = (courseItem) => {
 const deleteCourse = async (courseId) => {
   try {
     const res = await axios.delete(`http://localhost:5000/courses/${courseId}`)
-    _.remove(courses.value, { course_id: courseId })
+    _.remove(courses.value, { id: courseId })
   } catch (e) {
     console.error('Błąd przy usuwaniu kursu:', e)
     throw e
@@ -181,7 +149,8 @@ onMounted(async () => {
           <h4 class="course-title">{{ courseItem.title }}</h4>
           <div class="course-actions">
             <button @click.prevent="updateCourse(courseItem)" class="submit-btn">Edytuj</button>
-            <button @click.prevent="deleteCourse(courseItem.course_id)" class="reset-btn">Usuń</button>
+            <button @click.prevent="deleteCourse(courseItem.id)" class="reset-btn">Usuń</button>
+            <button @click.prevent="router.push('/courses/' + courseItem.id)" class="info-btn">Pokaż szczegóły</button>
           </div>
         </div>
         <p class="course-subject"><strong>Przedmiot:</strong> {{ courseItem.subject }}</p>
@@ -217,7 +186,7 @@ onMounted(async () => {
       <div class="course" v-for="course in meetings" :key="course"></div>
     </div>
     <p v-else><b>Na ten moment nie masz żadnego spotkania!</b></p>
-    <RouterLink to="/create_meeting" class="link">Dodaj spotkanie</RouterLink>
+    <button type="button" class="link" @click="show_meeting = true">Dodaj spotkanie</button>
   </div>
 </template>
 
@@ -244,7 +213,7 @@ onMounted(async () => {
 }
 
 .course-actions {
-  width: 50%;
+  width: 80%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -331,5 +300,9 @@ onMounted(async () => {
   padding: 1rem;
   border-radius: 0.5rem;
   color: #065f46;
+}
+
+.submit-btn, .reset-btn, .info-btn {
+  width: 30%;
 }
 </style>

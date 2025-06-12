@@ -14,8 +14,6 @@ import UpdateAccount from "@/components/UpdateAccount.vue";
 import DeleteAccount from "@/components/DeleteAccount.vue";
 import Teachers from "@/components/Teachers.vue";
 import Teacher from "@/components/Teacher.vue";
-import AddCourse from "@/components/AddCourse.vue";
-import CreateMeeting from "@/components/CreateMeeting.vue";
 
 const routes = [
   {

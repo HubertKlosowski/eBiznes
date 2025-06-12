@@ -54,14 +54,14 @@ watch(() => props.date, (newDate) => {
 
       <FormInputSelect
         :select_values="['16:00', '17:00', '18:00', '19:00', '20:00', '21:00']"
-        :input_value="meeting.time_start"
+        v-model:input_value="meeting.time_start"
       >
         <label>Godzina rozpoczęcia</label>
       </FormInputSelect>
 
       <FormInputSelect
         :select_values="['16:00', '17:00', '18:00', '19:00', '20:00', '21:00']"
-        :input_value="meeting.time_end"
+        v-model:input_value="meeting.time_end"
       >
         <label>Godzina zakończenia</label>
       </FormInputSelect>

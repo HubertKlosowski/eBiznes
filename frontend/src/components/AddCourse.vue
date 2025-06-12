@@ -23,6 +23,7 @@ const course = reactive({
 // ścieżka do backendu
 const addCourse = async () => {
   try {
+    console.log(course)
     const res = await axios.post(`http://localhost:5000/courses`, course)
 
     if (res.data.course_id) {
@@ -60,7 +61,7 @@ const resetInputs = () => {
 
       <FormInputSelect
         :select_values="['podstawowka', 'liceum', 'technikum', 'studia']"
-        :input_value="course.level"
+        v-model:input_value="course.level"
       >
         <label>Poziom nauczania</label>
       </FormInputSelect>

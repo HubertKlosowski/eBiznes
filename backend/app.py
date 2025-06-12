@@ -80,6 +80,17 @@ def get_teachers():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/teachers/<uuid:teacher_id>', methods=['GET'])
+def get_teacher_by_id(teacher_id):
+    try:
+        teacher = Teacher.query.get(teacher_id)
+        if not teacher:
+            return jsonify({'error': 'Teacher not found'}), 404
+        return jsonify(teacher.to_dict()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/students/register', methods=['POST'])
 def register_student():
     data = request.get_json()
@@ -254,7 +265,7 @@ def get_students_for_course(course_id):
     if not course:
         return jsonify({'error': 'Course not found'}), 404
     return jsonify([{
-        'student_id': str(s.student_id),
+        'student_id': str(s.id),
         'name': s.name,
         'email': s.email
     } for s in course.students])

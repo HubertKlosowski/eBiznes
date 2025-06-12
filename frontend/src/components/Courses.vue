@@ -157,7 +157,7 @@ onMounted(() => {
             <span>Cena: {{ course.price }} zł</span>
             <span>Ocena: {{ course.score }}/5</span>
           </div>
-          <div @click="goToCourse(i)" class="link">
+          <div @click="goToCourse(course.id)" class="link">
             Pokaż szczegóły
           </div>
         </div>
