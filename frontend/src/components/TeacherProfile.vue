@@ -34,7 +34,7 @@ const logoutUser = async () => {
 const getNumberofBoughtCourses = async (teacherId) => {
   try {
     const res = await axios.get(`http://localhost:5000/teachers/${teacherId}/courses/count`)
-    return res.data.count
+    num_bought_courses.value = res.data
   } catch (e) {
     console.error('Błąd przy pobieraniu liczby kursów:', e)
     throw e
@@ -103,7 +103,7 @@ const getMeetingsForUser = async () => {
 onMounted(async () => {
   await getCoursesForUser()
   await getMeetingsForUser()
-  num_bought_courses.value = await getNumberofBoughtCourses(user.id)
+  await getNumberofBoughtCourses(user.id)
 })
 </script>
 
@@ -160,7 +160,8 @@ onMounted(async () => {
           <p class="course-level"><strong>Poziom:</strong> {{ courseItem.level }}</p>
           <p class="course-duration"><strong>Czas:</strong> {{ courseItem.duration }}h</p>
           <p class="course-price"><strong>Cena:</strong> {{ courseItem.price }} zł</p>
-          <p class="course-score"><strong>Ocena: </strong> {{ courseItem.score }}/5</p>
+          <p class="course-score"><strong>Ocena:</strong> {{ courseItem.score }}/5</p>
+          <p class="course-score"><strong>Ilość zapisów:</strong> {{ _.find(num_bought_courses, ['course_id', courseItem.id])['count'] }} </p>
         </div>
       </div>
     </div>

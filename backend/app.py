@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from models import db, Meeting, Lesson, Test, Opinion, Student, Course, Teacher
+from models import db, Meeting, Lesson, Test, Opinion, Student, Course, Teacher, student_course
 from config import Config
 from datetime import datetime
 from flask_cors import CORS, cross_origin
@@ -256,8 +256,12 @@ def delete_meeting(meeting_id):
 
 @app.route('/teachers/<uuid:teacher_id>/courses/count', methods=['GET'])
 def get_number_of_bought_courses(teacher_id):
-    count = Course.query.filter_by(teacher_id=teacher_id).count()
-    return jsonify({'count': count})
+    teacher_courses = Course.query.filter_by(teacher_id=teacher_id).all()
+    counts = []
+    for course_id in set([c.id for c in teacher_courses]):
+        results = db.session.query(student_course).filter_by(course_id=course_id).count()
+        counts.append({'course_id': course_id, 'count': results})
+    return jsonify(counts)
 
 @app.route('/courses/<uuid:course_id>/students', methods=['GET'])
 def get_students_for_course(course_id):

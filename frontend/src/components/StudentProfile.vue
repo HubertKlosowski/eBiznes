@@ -20,6 +20,7 @@ const getCoursesForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/courses')
     localStorage.setItem('user_courses', JSON.stringify(response.data))
+    courses.value = response.data
   } catch (e) {
     console.log(e)
   }
@@ -30,6 +31,7 @@ const getMeetingsForUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/students/' + user['id'] + '/meetings')
     localStorage.setItem('user_meetings', JSON.stringify(response.data))
+    meetings.value = response.data
   } catch (e) {
     console.log(e)
   }
@@ -172,6 +174,7 @@ onMounted(async () => {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
 }
 

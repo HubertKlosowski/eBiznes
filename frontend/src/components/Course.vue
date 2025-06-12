@@ -59,14 +59,12 @@ const getTeacherInfo = async () => {
 
 // ścieżka do backendu
 const deleteStudentFromCourse = async (studentId) => {
-  if (type === 'teacher') {
-    try {
-      const res = await axios.delete(`http://localhost:5000/courses/${course.id}/students/${studentId}`)
-      return res.data
-    } catch (e) {
-      console.error('Błąd przy usuwaniu studenta z kursu:', e)
-      throw e
-    }
+  try {
+    const res = await axios.delete(`http://localhost:5000/courses/${course.id}/students/${studentId}`)
+    _.remove(student_in_course.value, ['student_id', studentId])
+  } catch (e) {
+    console.error('Błąd przy usuwaniu studenta z kursu:', e)
+    throw e
   }
 }
 
@@ -120,7 +118,7 @@ onMounted(async () => {
   await getTestsByCourse()
   await getLessonsByCourse()
   await getTeacherInfo()
-  if (type === 'teacher') {
+  if (type.value === 'teacher') {
     student_in_course.value = await getStudentsForCourse()
   }
 })
@@ -230,7 +228,14 @@ onMounted(async () => {
     <div class="course-students" v-if="type === 'teacher'">
       <h3>Studenci zapisani do kursu</h3>
       <div class="students" v-if="!_.isEmpty(student_in_course)">
-        <div class="student" v-for="(student, i) in student_in_course" :key="i"></div>
+        <div class="student" v-for="(student, i) in student_in_course" :key="i">
+          <div class="student-info">
+            <p><strong>Id studenta:</strong> {{ student.student_id }}</p>
+            <p><strong>Email:</strong> {{ student.email }}</p>
+            <p><strong>Imię i nazwisko:</strong> {{ student.name }}</p>
+          </div>
+          <button type="button" @click="deleteStudentFromCourse(student.student_id)" class="reset-btn">Usuń z kursu</button>
+        </div>
       </div>
       <p v-else><b>Na ten moment żaden student nie dołączył do kursu!</b></p>
     </div>
@@ -244,6 +249,25 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.students {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.student {
+  width: 80%;
+  background-color: #ecfdf5;
+  border-left: 4px solid #10b981;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #065f46;
+}
+
 .opinions {
   height: 100%;
   width: 40%;
