@@ -44,7 +44,7 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
   const user = localStorage.getItem('user')
-  if ((to.path === '/account/teacher' || to.path === '/account/student') && user === null) {
+  if ((to.path === '/account/teacher' || to.path === '/account/student') && user === null && from.path !== '/login') {
     return false
   }
 })

@@ -94,27 +94,58 @@ def get_teacher_by_id(teacher_id):
 @app.route('/students/register', methods=['POST'])
 def register_student():
     data = request.get_json()
-    if Student.query.filter((Student.email == data['email']) | (Student.username == data['username'])).first():
-        return jsonify({'error': 'Email or username already exists'}), 400
 
-    new_student = Student(
-        name=data['name'],
-        username=data['username'],
-        email=data['email'],
-        level=data.get('level', 'basic')
-    )
-    new_student.set_password(data['password'])
-    db.session.add(new_student)
-    db.session.commit()
-    return jsonify({'message': 'Student registered', 'student': new_student.to_dict()}), 201
+    required_fields = ['name', 'username', 'email', 'password', 'level']
+    missing = [field for field in required_fields if not data.get(field)]
+
+    if missing:
+        return jsonify({
+            'error': [f"Pole '{field}' nie może być puste." for field in missing]
+        }), 400
+
+    if Student.query.filter((Student.email == data['email']) | (Student.username == data['username'])).first():
+        return jsonify({
+            'error': ['Użytkownik o podanym e-mailu lub nazwie użytkownika już istnieje.']
+        }), 400
+
+    try:
+        new_student = Student(
+            name=data['name'],
+            username=data['username'],
+            email=data['email'],
+            level=data.get('level', 'basic')
+        )
+        new_student.set_password(data['password'])
+        db.session.add(new_student)
+        db.session.commit()
+        return jsonify({
+            'success': 'Konto zostało poprawnie utworzone!',
+            'student': new_student.to_dict()
+        }), 201
+
+    except Exception as e:
+        return jsonify({
+            'error': [f'Wystąpił błąd przy tworzeniu konta: {str(e)}']
+        }), 500
+
 
 @app.route('/students/login', methods=['POST'])
 def login_student():
     data = request.get_json()
+
+    # Sprawdzenie pustych pól
+    missing = [field for field in ['username', 'password'] if not data.get(field)]
+    if missing:
+        return jsonify({
+            'error': [f"Pole '{field}' nie może być puste." for field in missing]
+        }), 400
+
     student = Student.query.filter_by(username=data['username']).first()
     if student and student.check_password(data['password']):
-        return jsonify({'message': 'Login successful', 'student': student.to_dict()})
-    return jsonify({'error': 'Invalid credentials'}), 401
+        return jsonify({'message': 'Zalogowano pomyślnie', 'student': student.to_dict()}), 200
+
+    return jsonify({'error': ['Nieprawidłowy login lub hasło.']}), 401
+
 
 @app.route('/students/forgot', methods=['POST'])
 def forgot_password():
@@ -130,29 +161,60 @@ def forgot_password():
 @app.route('/teachers/register', methods=['POST'])
 def register_teacher():
     data = request.get_json()
-    if Teacher.query.filter((Teacher.email == data['email']) | (Teacher.username == data['username'])).first():
-        return jsonify({'error': 'Email or username already exists'}), 400
 
-    new_teacher = Teacher(
-        name=data['name'],
-        username=data['username'],
-        email=data['email'],
-        specialty=data.get('specialty', 'other'),
-        description=data.get('description', ''),
-        experience=data.get('experience', 0)
-    )
-    new_teacher.password = generate_password_hash(data['password'])
-    db.session.add(new_teacher)
-    db.session.commit()
-    return jsonify({'message': 'Teacher registered', 'teacher_id': new_teacher.to_dict()}), 201
+    required_fields = ['name', 'username', 'email', 'password', 'specialty', 'experience']
+    missing = [field for field in required_fields if not data.get(field)]
+
+    if missing:
+        return jsonify({
+            'error': [f"Pole '{field}' nie może być puste." for field in missing]
+        }), 400
+
+    if Teacher.query.filter((Teacher.email == data['email']) | (Teacher.username == data['username'])).first():
+        return jsonify({
+            'error': ['Użytkownik o podanym e-mailu lub nazwie użytkownika już istnieje.']
+        }), 400
+
+    try:
+        new_teacher = Teacher(
+            name=data['name'],
+            username=data['username'],
+            email=data['email'],
+            specialty=data['specialty'],
+            description=data.get('description', ''),
+            experience=data['experience']
+        )
+        new_teacher.set_password(data['password'])
+        db.session.add(new_teacher)
+        db.session.commit()
+        return jsonify({
+            'success': 'Konto zostało poprawnie utworzone!',
+            'teacher': new_teacher.to_dict()
+        }), 201
+
+    except Exception as e:
+        return jsonify({
+            'error': [f'Wystąpił błąd przy tworzeniu konta: {str(e)}']
+        }), 500
+
 
 @app.route('/teachers/login', methods=['POST'])
 def login_teacher():
     data = request.get_json()
+
+    # Sprawdzenie pustych pól
+    missing = [field for field in ['username', 'password'] if not data.get(field)]
+    if missing:
+        return jsonify({
+            'error': [f"Pole '{field}' nie może być puste." for field in missing]
+        }), 400
+
     teacher = Teacher.query.filter_by(username=data['username']).first()
-    if teacher and check_password_hash(teacher.password, data['password']):
-        return jsonify({'message': 'Login successful', 'teacher': teacher.to_dict()})
-    return jsonify({'error': 'Invalid credentials'}), 401
+    if teacher and teacher.check_password(data['password']):
+        return jsonify({'message': 'Zalogowano pomyślnie', 'teacher': teacher.to_dict()}), 200
+
+    return jsonify({'error': ['Nieprawidłowy login lub hasło.']}), 401
+
 
 @app.route('/teachers/forgot', methods=['POST'])
 def forgot_teacher_password():

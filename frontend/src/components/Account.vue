@@ -27,9 +27,17 @@ import Header from "@/components/Header.vue";
 }
 
 .account-buttons {
+  width: 90%;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   display: flex;
+  flex-direction: row;
   gap: 1rem;
-  margin-top: 2rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .update, .delete {

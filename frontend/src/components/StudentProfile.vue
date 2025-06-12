@@ -179,6 +179,7 @@ onMounted(async () => {
 }
 
 .course {
+  width: 80%;
   background-color: #ecfdf5;
   border-left: 4px solid #10b981;
   padding: 1rem;

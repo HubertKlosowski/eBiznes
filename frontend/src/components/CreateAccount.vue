@@ -1,10 +1,11 @@
 <script setup>
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import FormInputText from "@/components/FormInputText.vue";
 import FormInputSelect from "@/components/FormInputSelect.vue";
 import FormButton from "@/components/FormButton.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import ResponseOutput from "@/components/ResponseOutput.vue";
 
 const user = reactive({
   name: '',
@@ -21,16 +22,39 @@ const router = useRouter()
 const student_levels = ref(['podstawówka', 'liceum', 'technikum', 'studia'])
 const teacher_levels = ref(['Matematyka', 'Fizyka', 'Biologia', 'Chemia'])
 
+const after_create = ref([])
+const title = ref('')
+const subtitle = ref('')
+const response_status = ref(0)
+
 const createAccount = async () => {
   try {
     const response = user.specialty === '' ?
         await axios.post('http://localhost:5000/students/register', user) :
         await axios.post('http://localhost:5000/teachers/register', user)
 
+    after_create.value = [
+      ['Imię i nazwisko', user['name']],
+      ['Nazwa użytkownika', user['username']],
+      ['Adres email', user['email']],
+    ]
+    title.value = response.data.success
+    response_status.value = response.status
     resetInputs()
     change_view.value = !change_view.value
   } catch (e) {
-    console.log(e)
+    if (typeof e.response === 'undefined') {
+      after_create.value = ['Nie udało się połączyć z serwerem.']
+      response_status.value = 500
+      title.value = 'Problem z serwerem'
+      subtitle.value = 'Proszę poczekać, serwer nie jest teraz dostępny.'
+    } else {
+      const error_response = e.response
+      after_create.value = error_response.data.error
+      response_status.value = error_response.status
+      title.value = 'Problem z danymi'
+      subtitle.value = 'Dane przekazane do formularza są błędne. Proszę je poprawić, zgodnie z komunikatami wyświetlanymi poniżej:'
+    }
   }
 }
 
@@ -49,7 +73,17 @@ const resetInputs = () => {
 </script>
 
 <template>
-  <div class="create-account-container">
+  <ResponseOutput
+      v-model:response_status="response_status"
+      :after_create="after_create"
+      v-if="response_status >= 200"
+      :title="title"
+      :subtitle="subtitle"
+  ></ResponseOutput>
+  <div class="create-account-container" :style="{
+    opacity: response_status < 200 ? '1' : '0.3',
+    pointerEvents: response_status < 200 ? 'auto' : 'none'
+  }">
     <form @submit.prevent="createAccount" class="create-account-form">
       <h2 class="form-title">Utwórz konto</h2>
 

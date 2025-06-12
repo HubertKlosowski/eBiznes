@@ -7,8 +7,14 @@ import FormButton from "@/components/FormButton.vue";
 import Header from "@/components/Header.vue";
 import axios from "axios";
 import FormInputSelect from "@/components/FormInputSelect.vue";
+import ResponseOutput from "@/components/ResponseOutput.vue";
 
 const router = useRouter()
+
+const after_create = ref([])
+const title = ref('')
+const subtitle = ref('')
+const response_status = ref(0)
 
 const user = reactive({
   username: '',
@@ -30,7 +36,18 @@ const logIn = async () => {
     router.push(user.type === 'Nauczyciel' ? '/account/teacher' : '/account/student')
     resetInputs()
   } catch (e) {
-    console.log(e)
+    if (typeof e.response === 'undefined') {
+      after_create.value = ['Nie udało się połączyć z serwerem.']
+      response_status.value = 500
+      title.value = 'Problem z serwerem'
+      subtitle.value = 'Proszę poczekać, serwer nie jest teraz dostępny.'
+    } else {
+      const error_response = e.response
+      after_create.value = error_response.data.error
+      response_status.value = error_response.status
+      title.value = 'Problem z danymi'
+      subtitle.value = 'Dane przekazane do formularza są błędne. Proszę je poprawić, zgodnie z komunikatami wyświetlanymi poniżej:'
+    }
   }
 }
 
@@ -41,11 +58,16 @@ const resetInputs = () => {
     type: ''
   })
 }
-
-console.log(change_view.value)
 </script>
 
 <template>
+  <ResponseOutput
+      v-model:response_status="response_status"
+      :after_create="after_create"
+      v-if="response_status >= 400"
+      :title="title"
+      :subtitle="subtitle"
+  ></ResponseOutput>
   <Header></Header>
   <div class="login-container" v-if="!change_view">
     <form @submit.prevent="logIn" class="login-form">
