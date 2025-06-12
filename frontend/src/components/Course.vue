@@ -262,12 +262,13 @@ onMounted(async () => {
               @click="deleteTest(test.id)"
               @mouseenter="show_test.test = 0"
               @mouseleave="show_test.test = -1"
+              v-if="type === 'teacher'"
           >
             <font-awesome-icon :icon="['fas', 'minus']" />
             <span v-if="show_test.test === 0">Usuń test</span>
           </div>
         </div>
-        <div class="test" v-if="show_test.form === false">
+        <div class="test" v-if="show_test.form === false && type === 'teacher'">
           <div
               class="submit-btn"
               @mouseenter="show_test.test = 1"
@@ -278,7 +279,7 @@ onMounted(async () => {
             <span v-if="show_test.test === 1">Dodaj test</span>
           </div>
         </div>
-        <div class="test-form" v-if="show_test.form === true">
+        <div class="test-form" v-if="show_test.form === true && type === 'teacher'">
           <form @submit.prevent="addTest">
             <FormInputText
                 :placeholder="'Tytuł testu'"
@@ -295,7 +296,7 @@ onMounted(async () => {
                 Dodaj test
               </template>
               <template v-slot:red>
-                Resetuj
+                Ukryj
               </template>
             </FormButton>
           </form>
