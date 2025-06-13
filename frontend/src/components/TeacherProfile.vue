@@ -61,6 +61,7 @@ const deleteCourse = async (courseId) => {
 const deleteMeeting = async (meetingId) => {
   try {
     const res = await axios.delete(`http://localhost:5000/meetings/${meetingId}`)
+    _.remove(meetings.value, { id: meetingId })
     return res.data
   } catch (e) {
     console.error('Błąd przy usuwaniu spotkania:', e)
@@ -92,7 +93,6 @@ onMounted(async () => {
   await getCoursesForUser()
   await getMeetingsForUser()
   await getNumberofBoughtCourses(user.id)
-  console.log(meetings.value)
 })
 </script>
 

@@ -250,13 +250,14 @@ onMounted(async () => {
   await getTestsByCourse()
   await getLessonsByCourse()
   await getTeacherInfo()
-  if (type.value === 'teacher') {
-    student_in_course.value = await getStudentsForCourse()
-  }
   if (user !== null) {
     type.value = (user.hasOwnProperty('specialty') && user.id === course.teacher_id) ? 'teacher' : 'student'
   } else {
     type.value = ''
+  }
+
+  if (type.value === 'teacher') {
+    student_in_course.value = await getStudentsForCourse()
   }
 })
 </script>
