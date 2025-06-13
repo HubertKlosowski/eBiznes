@@ -13,7 +13,6 @@ const courses = ref([])
 const meetings = ref([])
 const num_bought_courses = ref()
 const show_course = ref(false)
-const show_meeting = ref(false)
 const update_course = reactive({
   description: '',
   duration: 0,
@@ -59,17 +58,6 @@ const deleteCourse = async (courseId) => {
 }
 
 // ścieżka do backendu
-const updateMeeting = async (meetingId, meetingData) => {
-  try {
-    const res = await axios.put(`http://localhost:5000/meetings/${meetingId}`, meetingData)
-    return res.data
-  } catch (e) {
-    console.error('Błąd przy aktualizacji spotkania:', e)
-    throw e
-  }
-}
-
-// ścieżka do backendu
 const deleteMeeting = async (meetingId) => {
   try {
     const res = await axios.delete(`http://localhost:5000/meetings/${meetingId}`)
@@ -100,10 +88,11 @@ const getMeetingsForUser = async () => {
   }
 }
 
-onMounted(() => {
-  getCoursesForUser()
-  getMeetingsForUser()
-  getNumberofBoughtCourses(user.id)
+onMounted(async () => {
+  await getCoursesForUser()
+  await getMeetingsForUser()
+  await getNumberofBoughtCourses(user.id)
+  console.log(meetings.value)
 })
 </script>
 
@@ -181,39 +170,45 @@ onMounted(() => {
     ></AddCourse>
     <button type="button" class="link" @click="show_course = true">Dodaj kurs</button>
   </div>
-  <div class="meetings">
-    <h2>Twoje spotkania</h2>
+  <div class="account-user-meetings">
+    <h2>Utworzone spotkania</h2>
     <div class="meetings" v-if="!_.isEmpty(meetings)">
-      <div class="course" v-for="course in meetings" :key="course"></div>
+      <div class="meeting" v-for="(meetingItem, i) in meetings" :key="i">
+        <div class="meeting-header">
+          <h4 class="meeting-title">{{ meetingItem.title }}</h4>
+          <div class="meeting-actions">
+            <button @click.prevent="deleteMeeting(meetingItem.id)" class="reset-btn">Usuń</button>
+          </div>
+        </div>
+        <p class="meeting-description" v-if="meetingItem.description"><strong>Opis:</strong> {{ meetingItem.description }}</p>
+        <p class="meeting-description" v-else>Brak opisu spotkania!</p>
+        <div class="meeting-details">
+          <p><strong>Status:</strong> {{ meetingItem.status }}</p>
+          <p><strong>Początek:</strong> {{ new Date(meetingItem.start_date).toLocaleString() }}</p>
+          <p><strong>Koniec:</strong> {{ new Date(meetingItem.end_date).toLocaleString() }}</p>
+          <p v-if="meetingItem.link"><strong>Link:</strong> <a :href="meetingItem.link" target="_blank">{{ meetingItem.link }}</a></p>
+          <p v-else><strong>Link:</strong> Brak</p>
+        </div>
+      </div>
     </div>
     <p v-else><b>Na ten moment nie masz żadnego spotkania!</b></p>
-    <button type="button" class="link" @click="show_meeting = true">Dodaj spotkanie</button>
   </div>
 </template>
 
 <style scoped>
-.course-description {
+.course-description, .meeting-description {
   color: #6b7280;
   margin-bottom: 1rem;
   line-height: 1.4;
 }
 
-.course-details {
+.course-details, .meeting-details {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.course-details span {
-  padding: 0.25rem 0.5rem;
-  background-color: #e5e7eb;
-  border-radius: 0.375rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #374151;
-}
-
-.course-actions {
+.course-actions, .meeting-actions {
   width: 80%;
   display: flex;
   flex-direction: row;
@@ -269,12 +264,12 @@ onMounted(() => {
   color: #374151;
 }
 
-.account-user-courses h2, .meetings h2 {
+.account-user-courses h2, .account-user-meetings h2 {
   color: #111827;
   font-size: 1.5rem;
 }
 
-.account-user-courses, .meetings {
+.account-user-courses, .account-user-meetings {
   width: 90%;
   background-color: #ffffff;
   padding: 2rem;
@@ -286,7 +281,7 @@ onMounted(() => {
   align-items: flex-start;
 }
 
-.courses {
+.courses, .meetings {
   width: 100%;
   max-height: 300px;
   overflow-y: auto;
@@ -295,7 +290,7 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.course {
+.course, .meeting {
   background-color: #ecfdf5;
   border-left: 4px solid #10b981;
   padding: 1rem;

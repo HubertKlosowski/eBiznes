@@ -57,7 +57,6 @@ const goToTeacher = (i) => {
 
 onMounted(async () => {
   await getTeachers()
-  console.log(teachers.value)
 })
 </script>
 

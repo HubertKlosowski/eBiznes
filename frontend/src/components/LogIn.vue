@@ -69,7 +69,10 @@ const resetInputs = () => {
       :subtitle="subtitle"
   ></ResponseOutput>
   <Header></Header>
-  <div class="login-container" v-if="!change_view">
+  <div class="login-container" v-if="!change_view" :style="{
+    opacity: response_status < 200 ? '1' : '0.3',
+    pointerEvents: response_status < 200 ? 'auto' : 'none'
+  }">
     <form @submit.prevent="logIn" class="login-form">
       <h2 class="form-title">Zaloguj się</h2>
 

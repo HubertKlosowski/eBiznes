@@ -67,7 +67,10 @@ console.log(old_user.specialty !== '')
   ></ResponseOutput>
 
   <Header></Header>
-  <div class="update-account">
+  <div class="update-account" :style="{
+    opacity: response_status < 200 ? '1' : '0.3',
+    pointerEvents: response_status < 200 ? 'auto' : 'none'
+  }">
     <h2>Zmień dane konta</h2>
     <form @submit.prevent="updateAccount">
       <FormInputText

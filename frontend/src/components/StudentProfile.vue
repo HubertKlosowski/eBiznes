@@ -88,10 +88,23 @@ onMounted(async () => {
     </div>
     <p v-else><b>Na ten moment nie zapisałeś/aś się na żaden kurs!</b></p>
   </div>
-  <div class="meetings">
+  <div class="account-user-meetings">
     <h2>Twoje spotkania</h2>
     <div class="meetings" v-if="!_.isEmpty(meetings)">
-      <div class="course" v-for="course in meetings" :key="course"></div>
+      <div class="meeting" v-for="meetingItem in meetings" :key="meetingItem.id">
+        <div class="meeting-header">
+          <h4 class="meeting-title">{{ meetingItem.title }}</h4>
+        </div>
+        <p class="meeting-description" v-if="meetingItem.description"><strong>Opis:</strong> {{ meetingItem.description }}</p>
+        <p class="meeting-description" v-else>Brak opisu spotkania!</p>
+        <div class="meeting-details">
+          <p><strong>Status:</strong> {{ meetingItem.status }}</p>
+          <p><strong>Początek:</strong> {{ new Date(meetingItem.start_date).toLocaleString() }}</p>
+          <p><strong>Koniec:</strong> {{ new Date(meetingItem.end_date).toLocaleString() }}</p>
+          <p v-if="meetingItem.link"><strong>Link:</strong> <a :href="meetingItem.link" target="_blank">{{ meetingItem.link }}</a></p>
+          <p v-else><strong>Link:</strong> Brak</p>
+        </div>
+      </div>
     </div>
     <p v-else><b>Na ten moment nie masz żadnego spotkania!</b></p>
   </div>
@@ -146,12 +159,12 @@ onMounted(async () => {
   color: #374151;
 }
 
-.account-user-courses h2 {
+.account-user-courses h2, .account-user-meetings h2 {
   color: #111827;
   font-size: 1.5rem;
 }
 
-.account-user-courses, .meetings {
+.account-user-courses, .account-user-meetings {
   width: 90%;
   background-color: #ffffff;
   padding: 2rem;
@@ -163,12 +176,7 @@ onMounted(async () => {
   align-items: flex-start;
 }
 
-.account-user-courses h2 {
-  color: #111827;
-  font-size: 1.5rem;
-}
-
-.courses {
+.courses, .meetings {
   width: 100%;
   max-height: 300px;
   overflow-y: auto;
@@ -178,7 +186,7 @@ onMounted(async () => {
   gap: 1rem;
 }
 
-.course {
+.course, .meeting {
   width: 80%;
   background-color: #ecfdf5;
   border-left: 4px solid #10b981;

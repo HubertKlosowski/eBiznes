@@ -28,13 +28,14 @@ const opinion = reactive({
 })
 
 const user = reactive(JSON.parse(localStorage.getItem('user')))
-const type = ref((user.specialty !== undefined && user.id === course.teacher_id) ? 'teacher' : 'student')
+const type = ref('')
 const student_in_course = ref([])
 const show_shop = ref(false)
 const show_test = reactive({
   test: -1,
   form: false
 })
+
 const test = reactive({
   title: '',
   content: {},
@@ -252,9 +253,12 @@ onMounted(async () => {
   if (type.value === 'teacher') {
     student_in_course.value = await getStudentsForCourse()
   }
+  if (user !== null) {
+    type.value = (user.hasOwnProperty('specialty') && user.id === course.teacher_id) ? 'teacher' : 'student'
+  } else {
+    type.value = ''
+  }
 })
-
-console.log(lessons.value)
 </script>
 <template>
   <ResponseOutput

@@ -4,8 +4,29 @@ from config import Config
 from datetime import datetime
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash
-from uuid import UUID
 import uuid
+import random
+import string
+import re
+
+def is_password_valid(password):
+    if len(password) < 8:
+        return "Hasło musi mieć co najmniej 8 znaków."
+    if not re.search(r'[A-Z]', password):
+        return "Hasło musi zawierać przynajmniej jedną wielką literę."
+    if not re.search(r'[a-z]', password):
+        return "Hasło musi zawierać przynajmniej jedną małą literę."
+    if not re.search(r'\d', password):
+        return "Hasło musi zawierać przynajmniej jedną cyfrę."
+    if not re.search(r'[!@#$%^&*]', password):
+        return "Hasło musi zawierać przynajmniej jeden znak specjalny (!@#$%^&*)."
+    return None
+
+def generate_random_https_link(domain_length=8, path_length=10):
+    domain = ''.join(random.choices(string.ascii_lowercase, k=domain_length))
+    path = ''.join(random.choices(string.ascii_lowercase + string.digits, k=path_length))
+    return f"https://{domain}.com/{path}"
+
 
 app = Flask(__name__)
 CORS(app)
@@ -20,8 +41,8 @@ def add_meeting():
         new_meeting = Meeting(
             title=data['title'],
             description=data.get('description'),
-            status=data['status'],
-            link=data.get('link'),
+            status='scheduled',
+            link=generate_random_https_link(),
             start_date=datetime.strptime(data['start_date'], '%Y-%m-%d %H:%M:%S'),
             end_date=datetime.strptime(data['end_date'], '%Y-%m-%d %H:%M:%S'),
             student_id=uuid.UUID(data['student_id']),
@@ -29,9 +50,24 @@ def add_meeting():
         )
         db.session.add(new_meeting)
         db.session.commit()
-        return jsonify({'message': 'Meeting added', 'meeting': new_meeting.to_dict()}), 201
+        return jsonify({'message': 'Spotkanie pomyślnie dodane', 'meeting': new_meeting.to_dict()}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+@app.route('/meetings/<uuid:meeting_id>', methods=['DELETE'])
+def delete_meeting(meeting_id):
+    try:
+        meeting = Meeting.query.get(meeting_id)
+        if not meeting:
+            return jsonify({'error': 'Nie ma takiego spotkania'}), 404
+
+        db.session.delete(meeting)
+        db.session.commit()
+        return jsonify({'message': 'Spotkanie pomyślnie usunięte'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/courses/<uuid:course_id>/lessons', methods=['GET'])
 def get_lessons_by_course(course_id):
@@ -175,7 +211,6 @@ def get_teachers():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/teachers/<uuid:teacher_id>', methods=['GET'])
 def get_teacher_by_id(teacher_id):
     try:
@@ -185,7 +220,6 @@ def get_teacher_by_id(teacher_id):
         return jsonify(teacher.to_dict()), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/students/register', methods=['POST'])
 def register_student():
@@ -198,6 +232,10 @@ def register_student():
         return jsonify({
             'error': [f"Pole '{field}' nie może być puste." for field in missing]
         }), 400
+
+    password_error = is_password_valid(data['password'])
+    if password_error:
+        return jsonify({'error': [password_error]}), 400
 
     if Student.query.filter((Student.email == data['email']) | (Student.username == data['username'])).first():
         return jsonify({
@@ -224,7 +262,6 @@ def register_student():
             'error': [f'Wystąpił błąd przy tworzeniu konta: {str(e)}']
         }), 500
 
-
 @app.route('/students/login', methods=['POST'])
 def login_student():
     data = request.get_json()
@@ -241,7 +278,6 @@ def login_student():
         return jsonify({'message': 'Zalogowano pomyślnie', 'student': student.to_dict()}), 200
 
     return jsonify({'error': ['Nieprawidłowy login lub hasło.']}), 401
-
 
 @app.route('/students/<uuid:student_id>', methods=['PUT'])
 def update_student(student_id):
@@ -284,6 +320,20 @@ def delete_student(student_id):
             'error': [f'Wystąpił błąd przy usuwaniu studenta: {str(e)}']
         }), 500
 
+@app.route('/students/<string:student_mail>', methods=['GET'])
+def get_student_by_mail(student_mail):
+    try:
+        student = Student.query.filter_by(email=student_mail).first()
+
+        if not student:
+            return jsonify({'error': f'Nie ma studenta o podanym mailu {student_mail}'}), 404
+
+        return jsonify({'student': student.to_dict()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/students/forgot', methods=['POST'])
 def forgot_password():
     data = request.get_json()
@@ -306,6 +356,10 @@ def register_teacher():
         return jsonify({
             'error': [f"Pole '{field}' nie może być puste." for field in missing]
         }), 400
+
+    password_error = is_password_valid(data['password'])
+    if password_error:
+        return jsonify({'error': [password_error]}), 400
 
     if Teacher.query.filter((Teacher.email == data['email']) | (Teacher.username == data['username'])).first():
         return jsonify({
@@ -473,30 +527,6 @@ def delete_course(course_id):
     db.session.delete(course)
     db.session.commit()
     return jsonify({'message': 'Course deleted'})
-
-@app.route('/meetings/<uuid:meeting_id>', methods=['PUT'])
-def update_meeting(meeting_id):
-    meeting = Meeting.query.get(meeting_id)
-    if not meeting:
-        return jsonify({'error': 'Meeting not found'}), 404
-
-    data = request.get_json()
-    for field in ['title', 'description', 'status', 'link', 'start_date', 'end_date']:
-        if field in data:
-            setattr(meeting, field, data[field])
-
-    db.session.commit()
-    return jsonify({'message': 'Meeting updated'})
-
-@app.route('/meetings/<uuid:meeting_id>', methods=['DELETE'])
-def delete_meeting(meeting_id):
-    meeting = Meeting.query.get(meeting_id)
-    if not meeting:
-        return jsonify({'error': 'Meeting not found'}), 404
-
-    db.session.delete(meeting)
-    db.session.commit()
-    return jsonify({'message': 'Meeting deleted'})
 
 @app.route('/teachers/<uuid:teacher_id>/courses/count', methods=['GET'])
 def get_number_of_bought_courses(teacher_id):

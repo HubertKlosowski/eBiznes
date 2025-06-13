@@ -19,7 +19,7 @@ const user = reactive({
 })
 const change_view = defineModel('change_view')
 const router = useRouter()
-const student_levels = ref(['podstawówka', 'liceum', 'technikum', 'studia'])
+const student_levels = ref(['podstawowka', 'liceum', 'technikum', 'studia'])
 const teacher_levels = ref(['Matematyka', 'Fizyka', 'Biologia', 'Chemia'])
 
 const after_create = ref([])

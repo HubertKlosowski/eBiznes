@@ -17,6 +17,7 @@ const month_names = ref([
 ])
 let timer = null
 const user = reactive(JSON.parse(localStorage.getItem('user')))
+const type = ref(user.hasOwnProperty('specialty') ? 'teacher' : 'student')
 
 const changeDate = (param) => {
   const current = today.value
@@ -123,9 +124,10 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <AddMeeting
-        v-if="show_meeting"
+        v-if="show_meeting && type === 'teacher'"
         v-model:show_meeting="show_meeting"
         :date="date"
+        :user="user"
     ></AddMeeting>
   </div>
 </template>

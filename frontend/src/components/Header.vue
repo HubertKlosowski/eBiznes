@@ -8,11 +8,6 @@ const links = ref([
     icon: ['fas', 'user']
   },
   {
-    route: '/calendar',
-    name: 'Kalendarz',
-    icon: ['fas', 'calendar']
-  },
-  {
     route: '/courses',
     name: 'Kursy',
     icon: ['fas', 'building-columns']
@@ -38,6 +33,11 @@ onMounted(() => {
       name: 'Konto',
       icon: ['fas', 'user']
     }
+    links.value.push({
+      route: '/calendar',
+      name: 'Kalendarz',
+      icon: ['fas', 'calendar']
+    })
   }
 })
 </script>

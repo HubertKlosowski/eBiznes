@@ -58,7 +58,10 @@ const deleteAccount = async () => {
       :subtitle="subtitle"
   ></ResponseOutput>
 
-  <div class="delete-account">
+  <div class="delete-account" :style="{
+    opacity: response_status < 200 ? '1' : '0.3',
+    pointerEvents: response_status < 200 ? 'auto' : 'none'
+  }">
     <h3>Czy chcesz usunąć konto?</h3>
     <form @submit.prevent="deleteAccount">
       <FormButton :reset="true" @redEvent="() => { router.back() }">
